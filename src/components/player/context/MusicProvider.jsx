@@ -62,57 +62,39 @@ const MusicProvider = ({ children }) => {
     if (!currentSong) return;
 
     const audio = audioRef.current;
+    if (!audio) return;
 
     /*
       Online song:
         song.audio
-
+  
       Local song:
         song.url
-
+  
       We support both.
     */
-    const source =
-      currentSong.url ||
-      currentSong.audio;
+    const source = currentSong.url || currentSong.audio;
 
     if (!source) {
-      console.error(
-        "No audio source found:",
-        currentSong
-      );
-
-      setIsPlaying(false);
+      console.error("No audio source found:", currentSong);
       return;
     }
 
     // Stop previous audio
     audio.pause();
 
-    // Reset player
+    // Reset the audio element
     audio.currentTime = 0;
-    setCurrentTime(0);
-    setDuration(0);
-
-    // IMPORTANT:
-    // Use .src, NOT .source
     audio.src = source;
 
-    // Load new source
+    // Load the new source
     audio.load();
 
     const playAudio = async () => {
       try {
         await audio.play();
-
-        setIsPlaying(true);
       } catch (error) {
-        console.error(
-          "Unable to play audio:",
-          error
-        );
-
-        setIsPlaying(false);
+        console.error("Unable to play audio:", error);
       }
     };
 
