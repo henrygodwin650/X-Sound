@@ -1,0 +1,177 @@
+import Davido from '../../assets/cover-image/download (4).jpeg'
+import Burnaboy2 from '../../assets/cover-image/images (5).jpeg'
+import Wizkid2 from '../../assets/cover-image/images (12).jpeg'
+import Ayra1 from '../../assets/cover-image/images (16).jpeg'
+import Phyno from '../../assets/cover-image/images (28).jpeg'
+import Evado from '../../assets/cover-image/images (32).jpeg'
+import Rema from '../../assets/cover-image/images (1).jpeg'
+import OmahLay from '../../assets/cover-image/images (7).jpeg'
+import ChinyereUdoma from '../../assets/cover-image/images (15).jpeg'
+import Jeriq from '../../assets/cover-image/download (5).jpeg'
+import Shallipop from '../../assets/cover-image/images (30).jpeg'
+
+const musicData = [
+  {
+    id: 1,
+    title: "Kese",
+    artist: "Wizkid",
+    album: "After Hours",
+    genre: "Pop",
+    duration: "3:20",
+    cover: Wizkid2,
+    audio: "",
+    plays: 12458390,
+    likes: 2580000,
+    trending: true,
+    recent: true,
+  },
+
+  {
+    id: 2,
+    title: "Calm Down",
+    artist: "Rema",
+    album: "Rave & Roses",
+    genre: "Afrobeats",
+    duration: "3:59",
+    cover: Rema,
+    audio: "",
+    plays: 9321456,
+    likes: 1850000,
+    trending: true,
+    recent: false,
+  },
+
+  {
+    id: 3,
+    title: "Unavailable",
+    artist: "Davido",
+    album: "Timeless",
+    genre: "Pop",
+    duration: "3:21",
+    cover: Davido,
+    audio: "",
+    plays: 8754321,
+    likes: 1320000,
+    trending: false,
+    recent: true,
+  },
+
+  {
+    id: 4,
+    title: "By Now",
+    artist: "Evado",
+    album: "Still Drunk in Pain",
+    genre: "R&B",
+    duration: "4:20",
+    cover: Evado,
+    audio: "",
+    plays: 6542389,
+    likes: 980000,
+    trending: true,
+    recent: false,
+  },
+
+  {
+    id: 5,
+    title: "Last Last",
+    artist: "Burna Boy",
+    album: "Love, Damini",
+    genre: "Afrobeats",
+    duration: "2:53",
+    cover: Burnaboy2,
+    audio: "",
+    plays: 5123480,
+    likes: 820000,
+    trending: true,
+    recent: true,
+  },
+
+  {
+    id: 6,
+    title: "Uzo Ano",
+    artist: "Phyno",
+    album: "NO GUTS",
+    genre: "Pop",
+    duration: "2:48",
+    cover: Phyno,
+    audio: "",
+    plays: 11452344,
+    likes: 2360000,
+    trending: true,
+    recent: false,
+  },
+
+  {
+    id: 7,
+    title: "Rush",
+    artist: "Ayra Starr",
+    album: "Rush EP",
+    genre: "Afrobeats",
+    duration: "3:04",
+    cover: Ayra1,
+    audio: "",
+    plays: 4215400,
+    likes: 650000,
+    trending: false,
+    recent: true,
+  },
+
+  {
+    id: 8,
+    title: "Clarity Of Mind",
+    artist: "Omah Lay",
+    album: "",
+    genre: "Pop",
+    duration: "2:36",
+    cover: OmahLay,
+    audio: "",
+    plays: 7421300,
+    likes: 1200000,
+    trending: true,
+    recent: false,
+  },
+  {
+    id: 9,
+    title: "Akpofegom",
+    artist: "Jeriq",
+    album: "",
+    genre: "Pop",
+    duration: "2:36",
+    cover: Jeriq,
+    audio: "",
+    plays: 7421300,
+    likes: 1200000,
+    trending: true,
+    recent: false,
+  },
+  {
+    id: 10,
+    title: "Wind of Glory",
+    artist: "Chinyere Udoma",
+    album: "",
+    genre: "Gospel",
+    duration: "5:36",
+    cover: ChinyereUdoma,
+    audio: "",
+    plays: 7421300,
+    likes: 1200000,
+    trending: true,
+    recent: false,
+  },
+  {
+    id: 11,
+    title: "Laho",
+    artist: "Shallipopi",
+    album: "",
+    genre: "Pop",
+    duration: "2:36",
+    cover: Shallipop,
+    audio: "",
+    plays: 7421300,
+    likes: 1200000,
+    trending: true,
+    recent: false,
+  },
+];
+
+export default musicData;

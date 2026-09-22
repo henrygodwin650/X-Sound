@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+/* Required for darkMode: 'class' to work in v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer components {
+  .hero-bg-color {
+    @apply bg-linear-to-br from-black via-gray-900 to-green-950 dark:from-green-950 dark:via-gray-900 dark:to-black dark:text-white;
+
+    /* Scrollbar */
+
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #22c55e;
+      border-radius: 999px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    /* Smooth scrolling */
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Body */
+
+    body {
+      overflow-x: hidden;
+    }
+  }
+}
+@theme {
+  --color-primary: #f42c37;
+  --color-secondary: #f42c37;
+  --color-brand-yellow: #fdc62e;
+  --color-brand-green: #2dcc6f;
+  --color-brand-blue: #1376f4;
+  --color-brand-white: #eeeeee;
+}
