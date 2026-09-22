@@ -1,4 +1,4 @@
-```jsx
+
 import React, {
   useEffect,
   useRef,
@@ -556,39 +556,3 @@ const MusicProvider = ({ children }) => {
 };
 
 export default MusicProvider;
-```
-
-// ### One important thing
-
-// This provider assumes your local music object looks something like:
-
-// ```js
-// {
-//   id: "local-1",
-//   title: "My Song",
-//   artist: "Unknown Artist",
-//   url: "blob:http://localhost:5173/...."
-// }
-// ```
-
-// or:
-
-// ```js
-// {
-//   id: "local-1",
-//   title: "My Song",
-//   artist: "Unknown Artist",
-//   url: URL.createObjectURL(file)
-// }
-// ```
-
-// The provider then does:
-
-// ```js
-// const source = currentSong.url || currentSong.audio;
-// audio.src = source;
-// ```
-
-// So **the next file I would check is your `useLocalMusic.js` / `ImportMusicButton.jsx`**, because if `url` is not being created correctly, fixing `MusicProvider` alone won't make the local music play.
-
-// Also, if you're currently saving the `blob:` URL in `localStorage`, that's another important issue: **blob URLs are not reliable across page reloads**. Your current X-sound design of keeping the actual local file only for the current session means we should make sure the File/Blob stays available in memory and only save the song's metadata/history in localStorage.
