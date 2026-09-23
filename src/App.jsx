@@ -21,6 +21,7 @@ import Favorites from './components/Hero/Favorite/Favorites';
 import Settings from './components/Hero/Settings/Settings';
 import TrendingPage from './components/Navbar/TrendingPage';
 import RecentlyAddedPage from './components/Navbar/RecentlyAddedPage';
+import Lyrics from './components/player/Lyrics';
 
 const App = () => {
   return (
@@ -33,18 +34,19 @@ const App = () => {
       </Route>
 
       {/* Protected routes */}
-      {/* <Route element={<ProtectedRoutes />}> */}
+       <Route element={<ProtectedRoutes />}>
         <Route element={<AppLayout />}>
           <Route path="/home" element={<HomePage />} />
           <Route path="/search" element={<Search />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/favorite" element={<Favorites />} />
+          <Route path="/lyrics" element={<Lyrics />} />
           <Route path="/player" element={<Player />} />
           <Route path="/local" element={<LocalMusic />} />
           <Route path="/trending-page" element={<TrendingPage />} />
           <Route path="/recent-page" element={<RecentlyAddedPage />} />
         </Route>
-      {/* </Route> */}
+      </Route> 
     </Routes>
   );
 };

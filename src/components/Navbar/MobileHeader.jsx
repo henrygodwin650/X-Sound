@@ -18,7 +18,7 @@ const MobileHeader = ({
 
       <button
         onClick={() => setMobileMenu(true)}
-        className="rounded-xl p-2 text-white transition hover:bg-green-600 hover:text-white"
+        className="rounded-xl p-2 hover:border-green-600 hover:border-2 dark:border-0 text-green-600 transition hover:dark:bg-green-600 dark:text-white"
       >
 
         <FiMenu className="text-2xl" />
