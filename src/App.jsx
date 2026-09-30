@@ -1,6 +1,4 @@
-import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-
 // Layouts
 import AuthLayout from './components/Login/AuthLayout';
 import AppLayout from './components/Hero/AppLayout';
@@ -22,19 +20,27 @@ import Settings from './components/Hero/Settings/Settings';
 import TrendingPage from './components/Navbar/TrendingPage';
 import RecentlyAddedPage from './components/Navbar/RecentlyAddedPage';
 import Lyrics from './components/player/Lyrics';
+import LandingPage from './components/LandingPage/LandingPage';
+import Blog from './components/LandingPage/Blog';
+import AboutPage from './components/LandingPage/AboutPage';
+import Contact from './components/LandingPage/Contact';
 
 const App = () => {
   return (
     <Routes>
       <Route element={<AuthLayout />}>
-        <Route path="/" element={<CreateAccount />} />
+        <Route path="/create-account" element={<CreateAccount />} />
+        <Route path="/blog-app" element={<Blog />} />
+        <Route path="/contact-us" element={<Contact />} />
+        <Route path="/about-app" element={<AboutPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/forgotten" element={<ForgottenPage />} />
       </Route>
 
       {/* Protected routes */}
-       <Route element={<ProtectedRoutes />}>
+      <Route element={<ProtectedRoutes />}>
         <Route element={<AppLayout />}>
           <Route path="/home" element={<HomePage />} />
           <Route path="/search" element={<Search />} />
@@ -46,7 +52,7 @@ const App = () => {
           <Route path="/trending-page" element={<TrendingPage />} />
           <Route path="/recent-page" element={<RecentlyAddedPage />} />
         </Route>
-      </Route> 
+      </Route>
     </Routes>
   );
 };

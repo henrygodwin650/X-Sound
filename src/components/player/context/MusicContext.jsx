@@ -1,28 +1,90 @@
-import React, { createContext } from 'react'
-
+import React, { createContext } from "react";
 
 const MusicContext = createContext({
+  // ============================================
+  // SONG
+  // ============================================
+
   currentSong: null,
-  isPlaying: false,
+  setCurrentSong: () => {},
+
+  // ============================================
+  // QUEUE
+  // ============================================
+
   queue: [],
+  setQueue: () => {},
+
+  // ============================================
+  // FAVORITES
+  // ============================================
+
   favorites: [],
+  setFavorites: () => {},
+  toggleFavorite: () => {},
+  isFavorite: () => false,
+
+  // ============================================
+  // VOLUME
+  // ============================================
+
   volume: 70,
+  setVolume: () => {},
+
+  // ============================================
+  // PLAYBACK
+  // ============================================
+
+  isPlaying: false,
+  setIsPlaying: () => {},
+
+  // ============================================
+  // SHUFFLE
+  // ============================================
+
   shuffle: false,
-  repeat: false,
+  setShuffle: () => {},
+  toggleShuffle: () => {},
+
+  // ============================================
+  // REPEAT
+  // ============================================
+
+  repeat: "off",
+  setRepeat: () => {},
+  toggleRepeat: () => {},
+
+  // ============================================
+  // CURRENT INDEX
+  // ============================================
+
   currentIndex: 0,
+  setCurrentIndex: () => {},
+
+  // ============================================
+  // PROGRESS
+  // ============================================
+
   currentTime: 0,
+  setCurrentTime: () => {},
   duration: 0,
+
+  // ============================================
+  // AUDIO
+  // ============================================
+
+  audioRef: null,
+
+  // ============================================
+  // PLAYBACK FUNCTIONS
+  // ============================================
+
   playSong: () => {},
   pauseSong: () => {},
   togglePlay: () => {},
-  nextSong: () => {},
-  previousSong: () => {},
   seek: () => {},
-  setVolume: () => {},
-  setShuffle: () => {},
-  setRepeat: () => {},
-  setFavorites: () => {},
-  audioRef: null,
+  handleNext: () => {},
+  handlePrevious: () => {},
 });
 
-export default MusicContext
+export default MusicContext;

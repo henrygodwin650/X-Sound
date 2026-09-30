@@ -35,7 +35,7 @@ const VerifyEmail = () => {
       await user.reload();
 
       if (user.emailVerified) {
-        navigate("/");
+        navigate("/home");
       } else {
         setError("Your email hasn't been verified yet.");
       }

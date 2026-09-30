@@ -3,7 +3,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import {
   FaPlay,
-  FaHeart,
+  FaPause,
   FaRegHeart,
 } from "react-icons/fa";
 
@@ -14,7 +14,7 @@ import {
 import useMusic from "../../Hooks/useMusic";
 
 const MusicCard = ({ music }) => {
-  const { playSong, queue } = useMusic();
+  const { playSong, pauseSong, isPlaying, currentSong } = useMusic();
 
   if (!music) return null;
 
@@ -38,10 +38,21 @@ const MusicCard = ({ music }) => {
         <motion.button
           whileTap={{ scale: 0.9 }}
           className="absolute bottom-4 right-4 flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-xl text-white opacity-0 shadow-xl transition-all duration-300 group-hover:opacity-100"
-          onClick={() => playSong(music, queue.length ? queue : [music])}
+          onClick={() => {
+            if (currentSong?.id === music.id && isPlaying) {
+              pauseSong();
+            } else {
+              playSong(music, [music]);
+            }
+          }}
         >
-          <FaPlay className="ml-1" />
+          {currentSong?.id === music.id && isPlaying ? (
+            <FaPause />
+          ) : (
+            <FaPlay className="ml-1" />
+          )}
         </motion.button>
+
       </div>
 
       {/* Content */}

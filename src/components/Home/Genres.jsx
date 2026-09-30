@@ -88,11 +88,11 @@ const Genres = () => {
 
             <motion.div
               key={genre.id}
-              whilehover={{
+              whileHover={{
                 y: -10,
                 scale: 1.03,
               }}
-              whiletap={{
+              whileTap={{
                 scale: .97,
               }}
               className={`
@@ -126,7 +126,7 @@ const Genres = () => {
                 </div>
 
                 <motion.div
-                  whilehover={{
+                  whileHover={{
                     rotate: 15,
                     scale: 1.2,
                   }}

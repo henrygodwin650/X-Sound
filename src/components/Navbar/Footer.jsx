@@ -62,11 +62,11 @@ py-16
             <div className="mt-8 lg:mt-16 flex gap-4">
 
               <button className="rounded-full bg-white/10 p-3 hover:bg-green-500 transition"
-                whilehover={{
+                whileHover={{
                   scale: 1.08
                 }}
 
-                whiletap={{
+                whileTap={{
                   scale: .95
                 }}
               >
@@ -76,11 +76,11 @@ py-16
               </button>
 
               <button className="rounded-full bg-white/10 p-3 hover:bg-green-500 transition"
-                whilehover={{
+                whileHover={{
                   scale: 1.08
                 }}
 
-                whiletap={{
+                whileTap={{
                   scale: .95
                 }}>
 
@@ -89,11 +89,11 @@ py-16
               </button>
 
               <button className="rounded-full bg-white/10 p-3 hover:bg-green-500 transition"
-                whilehover={{
+                whileHover={{
                   scale: 1.08
                 }}
 
-                whiletap={{
+                whileTap={{
                   scale: .95
                 }}
               >
@@ -103,11 +103,11 @@ py-16
               </button>
 
               <button className="rounded-full bg-white/10 p-3 hover:bg-green-500 transition"
-                whilehover={{
+                whileHover={{
                   scale: 1.08
                 }}
 
-                whiletap={{
+                whileTap={{
                   scale: .95
                 }}
               >
@@ -117,11 +117,11 @@ py-16
               </button>
 
               <button className="rounded-full bg-white/10 p-3 hover:bg-green-500 transition"
-                whilehover={{
+                whileHover={{
                   scale: 1.08
                 }}
 
-                whiletap={{
+                whileTap={{
                   scale: .95
                 }}
               >

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { motion } from "framer-motion";
 import { auth, db } from "../../backend/firebase";
 import {
@@ -70,7 +70,7 @@ const CreateAccount = () => {
         { merge: true }
       );
 
-      navigate("/");
+      navigate("/home");
 
     } catch (error) {
       alert(error.message);
@@ -80,13 +80,17 @@ const CreateAccount = () => {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors },
   } = useForm({
     mode: "onChange",
   });
 
-  const password = watch("password", "");
+  const password = useWatch({
+    control,
+    name: "password",
+    defaultValue: "",
+  });
 
   const strength = useMemo(() => {
     let score = 0;
@@ -105,42 +109,45 @@ const CreateAccount = () => {
   }, [password]);
 
   const onSubmit = async (data) => {
-
     try {
-      setMessage('');
+      setMessage("");
       setError("");
 
-      // Create Firebase user
+      const email = data.email.trim().toLowerCase();
+      const name = data.name.trim();
 
-      const userCredential =
-        await createUserWithEmailAndPassword(
-          auth,
-          data.email,
-          data.password
-        );
+      // Create Firebase account
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        data.password
+      );
 
       const user = userCredential.user;
 
-      // Update user's display name
+      // Update display name
       await updateProfile(user, {
-        displayName: data.name,
+        displayName: name,
       });
 
-      // Save user to Firestore
+      // Save user information to Firestore
       await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
-        name: data.name,
-        email: data.email,
+        name: name,
+        email: email,
         createdAt: serverTimestamp(),
       });
 
-      // Send email verification
+      // Send verification email
       await sendEmailVerification(user);
 
       setMessage(
-        <div className="container my-4 mx-auto">
-          <div className="border text-green-600 rounded-2xl border-white/20 py-3 bg-white/10 shadow-[0_0_80px_rgba(34,197,94,.25)]">
-            <p className="text-center font-semibold text-lg">Password reset email sent to your email. Please check your inbox 📧.</p>
+        <div className="container mx-auto px-3 my-4">
+          <div className="rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-green-500 shadow-[0_0_80px_rgba(34,197,94,.25)]">
+            <p className="text-center text-lg font-semibold">
+              Account created successfully! Please check your inbox to verify
+              your email 📧.
+            </p>
           </div>
         </div>
       );
@@ -148,27 +155,87 @@ const CreateAccount = () => {
       navigate("/verify-email");
 
     } catch (err) {
-      switch (error.code) {
-        case "auth/too-many-attempt": setError(
-          err.message(<div className="container my-4 mx-auto">
-            <div className="border text-red-500 rounded-2xl border-white/20 py-3 bg-white/10 shadow-[0_0_80px_rgba(34,197,94,.25)]">
-              <p className="text-center font-semibold text-lg">Too many attempts. Please try again later.</p>
+      console.error("Create Account Error:", err);
+      console.error("Error Code:", err.code);
+      console.error("Error Message:", err.message);
+
+      switch (err.code) {
+        case "auth/email-already-in-use":
+          setError(
+            <div className="container mx-auto my-4">
+              <div className="rounded-2xl border border-red-500/30 bg-white/10 px-4 py-3">
+                <p className="text-center text-lg font-semibold text-red-400">
+                  This email is already registered.
+                </p>
+
+                <p className="mt-1 text-center text-sm text-gray-300">
+                  Please use another email or log in to your existing account.
+                </p>
+              </div>
             </div>
-          </div>)
-        );
+          );
           break;
-        default: setError(
-          <div className="container my-4 mx-auto">
-            <div className="border text-red-500 rounded-2xl border-white/20 py-3 bg-white/10 shadow-[0_0_80px_rgba(34,197,94,.25)]">
-              <p className="text-center font-semibold text-lg">
-                Something went wrong. Please try again later
-              </p>
+
+        case "auth/invalid-email":
+          setError(
+            <div className="container mx-auto my-4">
+              <div className="rounded-2xl border border-red-500/30 bg-white/10 px-4 py-3">
+                <p className="text-center text-lg font-semibold text-red-400">
+                  Please enter a valid email address.
+                </p>
+              </div>
             </div>
-          </div>
-        );
+          );
+          break;
+
+        case "auth/weak-password":
+          setError(
+            <div className="container mx-auto my-4">
+              <div className="rounded-2xl border border-red-500/30 bg-white/10 px-4 py-3">
+                <p className="text-center text-lg font-semibold text-red-400">
+                  Your password is too weak.
+                </p>
+              </div>
+            </div>
+          );
+          break;
+
+        case "auth/too-many-requests":
+          setError(
+            <div className="container mx-auto my-4">
+              <div className="rounded-2xl border border-red-500/30 bg-white/10 px-4 py-3">
+                <p className="text-center text-lg font-semibold text-red-400">
+                  Too many attempts. Please try again later.
+                </p>
+              </div>
+            </div>
+          );
+          break;
+
+        case "auth/operation-not-allowed":
+          setError(
+            <div className="container mx-auto my-4">
+              <div className="rounded-2xl border border-red-500/30 bg-white/10 px-4 py-3">
+                <p className="text-center text-lg font-semibold text-red-400">
+                  Email and password registration is currently disabled.
+                </p>
+              </div>
+            </div>
+          );
+          break;
+
+        default:
+          setError(
+            <div className="container mx-auto my-4">
+              <div className="rounded-2xl border border-red-500/30 bg-white/10 px-4 py-3">
+                <p className="text-center text-lg font-semibold text-red-400">
+                  {err.message || "Something went wrong. Please try again."}
+                </p>
+              </div>
+            </div>
+          );
       }
     }
-
   };
 
   const getStrengthColor = () => {
@@ -192,8 +259,8 @@ const CreateAccount = () => {
   return (
     <div className="relative min-h-screen overflow-hidden bg-linear-to-br from-black via-gray-900 to-green-950">
 
-      {message && <p>{message}</p>}
-      {error && <p>{error}</p>}
+      {message && message}
+      {error && error}
 
       {/* Aurora */}
 
@@ -653,14 +720,14 @@ const CreateAccount = () => {
               {/* ================= CREATE ACCOUNT BUTTON ================= */}
 
               <motion.button
-                whilehover={{
+                whileHover={{
                   scale: 1.02,
                 }}
-                whiletap={{
+                whileTap={{
                   scale: 0.98,
                 }}
                 type="submit"
-                className="w-full rounded-2xl bg-linear-to-r from-green-500 to-emerald-600 py-4 text-lg font-bold text-white shadow-lg transition hover:shadow-[0_0_30px_rgba(34,197,94,.45)]"
+                className="w-full cursor-pointer rounded-2xl bg-linear-to-r from-green-500 to-emerald-600 py-4 text-lg font-bold text-white shadow-lg transition hover:shadow-[0_0_30px_rgba(34,197,94,.45)]"
               >
                 Create Account
               </motion.button>

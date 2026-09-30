@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
-
 import {
   FaPlay,
   FaRandom,
@@ -12,59 +9,112 @@ import {
   FaMusic,
 } from "react-icons/fa";
 
-import { featuredMusic } from "../Home/FeaturedMusic";
+import {useHomeMusic} from "../../Hooks/useHomeMusic";
+import useMusic from "../../Hooks/useMusic";
 
 const Hero = () => {
+  const {
+    trending,
+    recent,
+    loading,
+  } = useHomeMusic();
+
+  const { playSong } = useMusic();
+
+  const songs =
+    trending.length > 0
+      ? trending
+      : recent;
+
   const [current, setCurrent] = useState(0);
-  // Auto change every 5 seconds
+
   useEffect(() => {
+    if (!songs.length) return;
 
     const interval = setInterval(() => {
-
       setCurrent((prev) =>
-        prev === featuredMusic.length - 1
+        prev === songs.length - 1
           ? 0
           : prev + 1
       );
-
     }, 5000);
 
     return () => clearInterval(interval);
+  }, [songs.length]);
 
-  }, []);
+  useEffect(() => {
+    if (current >= songs.length) {
+      setCurrent(0);
+    }
+  }, [current, songs.length]);
 
-  const music = featuredMusic[current] ?? featuredMusic[0];
+  if (loading) {
+    return (
+      <section className="mt-4 flex min-h-[500px] items-center justify-center rounded-[35px] border border-white/10 bg-white/5">
+        <div className="text-lg text-gray-400">
+          Loading music...
+        </div>
+      </section>
+    );
+  }
+
+  if (!songs.length) {
+    return (
+      <section className="mt-4 rounded-[35px] border border-white/10 bg-white/5 p-10 text-center">
+        <FaMusic className="mx-auto text-5xl text-green-400" />
+
+        <h2 className="mt-5 text-2xl font-bold text-white">
+          No music available
+        </h2>
+
+        <p className="mt-2 text-gray-400">
+          Please try again later.
+        </p>
+      </section>
+    );
+  }
+
+  const music = songs[current];
 
   const nextSlide = () => {
-    setCurrent((prev) => {
-      return prev === featuredMusic.length - 1
+    setCurrent((prev) =>
+      prev === songs.length - 1
         ? 0
-        : prev + 1;
-    });
+        : prev + 1
+    );
   };
 
   const prevSlide = () => {
-    setCurrent((prev) => {
-      return prev === 0
-        ? featuredMusic.length - 1
-        : prev - 1;
-    });
-
+    setCurrent((prev) =>
+      prev === 0
+        ? songs.length - 1
+        : prev - 1
+    );
   };
+
+  const handlePlay = () => {
+    playSong(music, songs);
+  };
+
   return (
-    <section
-      className="
-      relative
-      overflow-hidden
-      rounded-[35px]
-      border
-      border-white/10
-      hero-bg-color
-      p-8
-      mt-4
-      lg:p-12
-      "
-    >
+    <section className="relative mt-4 overflow-hidden rounded-[35px] border border-white/10 bg-white/5 p-8 lg:p-12">
+
+      {/* Green glow */}
+
+      <motion.div
+        key={music.id}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        className="absolute inset-0 bg-linear-to-br from-green-500/20 via-emerald-500/10 to-black"
+      />
+
+      <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-green-500/20 blur-[120px]" />
+
+      <div className="absolute -bottom-20 -left-20 h-80 w-80 rounded-full bg-emerald-400/20 blur-[120px]" />
+
+      {/* Floating notes */}
+
       <motion.div
         animate={{
           y: [0, -25, 0],
@@ -88,55 +138,22 @@ const Hero = () => {
           duration: 6,
           repeat: Infinity,
         }}
-        className="absolute left-16 bottom-16 text-5xl text-white/10"
+        className="absolute bottom-16 left-16 text-5xl text-white/10"
       >
         <FaMusic />
       </motion.div>
 
-      {/* Background Glow */}
-
-      <motion.div
-        key={music.id}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: .8 }}
-        className="
-    absolute
-    inset-0
-    bg-linear-to-br
-    from-green-500/20
-    via-emerald-500/10
-    to-black
-    "
-      />
-
-      <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-green-500/20 blur-[120px]" />
-
-      <div className="absolute -left-20 bottom-0 h-80 w-80 rounded-full bg-emerald-400/20 blur-[120px]" />
-
-      {/* Content */}
-
       <div className="relative z-10 grid items-center gap-10 lg:grid-cols-2">
 
-        {/* Left Side */}
+        {/* Text */}
 
         <div>
 
-          <span
-            className="
-            rounded-full
-            bg-green-500/20
-            px-4
-            py-2
-            text-sm
-            font-semibold
-            text-green-400
-            "
-          >
+          <span className="rounded-full bg-green-500/20 px-4 py-2 text-sm font-semibold text-green-400">
             NOW PLAYING
           </span>
 
-          <h1 className="mt-6 text-5xl font-black text-white lg:text-7xl">
+          <h1 className="mt-6 break-words text-5xl font-black text-white lg:text-7xl">
             {music.title}
           </h1>
 
@@ -145,213 +162,162 @@ const Hero = () => {
           </h2>
 
           <p className="mt-6 max-w-xl leading-8 text-gray-300">
-            {music.description}
+            Discover and stream{" "}
+            <span className="text-green-400">
+              {music.genre}
+            </span>{" "}
+            music on XSound.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4">
 
             <motion.button
-              whilehover={{
-                scale: 1.05,
-                rotateX: 2,
-              }}
-              whiletap={{ scale: 0.95 }}
-              className="
-              flex
-              items-center
-              gap-3
-              rounded-2xl
-              bg-green-500
-              px-8
-              py-4
-              font-bold
-              text-white
-              shadow-xl
-              "
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handlePlay}
+              className="flex items-center gap-3 rounded-2xl bg-green-500 px-8 py-4 font-bold text-white shadow-xl"
             >
               <FaPlay />
-
               Play Now
             </motion.button>
 
             <motion.button
-              whilehover={{ scale: 1.05 }}
-              whiletap={{ scale: 0.95 }}
-              className=" flex items-center gap-3 rounded-2xl border border-white/10 bg-white/10 backdrop-blur-3xl shadow-[0_15px_40px_rgba(0,0,0,.25)] px-8 py-4 font-semibold text-white "
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                const randomIndex = Math.floor(
+                  Math.random() * songs.length
+                );
+
+                setCurrent(randomIndex);
+              }}
+              className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/10 px-8 py-4 font-semibold text-white backdrop-blur-3xl"
             >
               <FaRandom />
-
               Shuffle
             </motion.button>
 
-            <motion.button
-              whilehover={{
-                scale: 1.05,
-                rotateX: 2,
-              }}
-              whiletap={{ scale: .95 }}
-              className="flex items-center   justify-center rounded-2xl bg-red-500/20 p-4 text-red-400 hover:bg-red-500  hover:text-white transition
-    "
-            >
-
+            <button className="flex items-center justify-center rounded-2xl bg-red-500/20 p-4 text-red-400 transition hover:bg-red-500 hover:text-white">
               <FaHeart className="text-xl" />
-
-            </motion.button>
+            </button>
 
           </div>
 
           <div className="mt-10 flex flex-wrap gap-8">
 
-            <motion.div
-              key={music.id}
-              initial={{
-                opacity: 0,
-                x: -40,
-              }}
-              animate={{
-                opacity: 1,
-                x: 0,
-              }}
-              transition={{
-                duration: .5,
-              }}
-            >
-
-              <p className="text-4xl font-black text-white">
-                125M
-              </p>
-
-              <span className="text-gray-400">
-                Streams
-              </span>
-
-            </motion.div>
-
             <div>
-
-              <p className="text-4xl font-black text-white">
-                5.0
+              <p className="text-3xl font-black text-white">
+                {music.duration}
               </p>
 
               <span className="text-gray-400">
-                Rating
+                Duration
               </span>
-
             </div>
 
             <div>
-
-              <p className="text-4xl font-black text-white">
-                3.8M
+              <p className="text-3xl font-black text-white">
+                {music.genre}
               </p>
 
               <span className="text-gray-400">
-                Likes
+                Genre
               </span>
+            </div>
 
+            <div>
+              <p className="text-3xl font-black text-white">
+                Jamendo
+              </p>
+
+              <span className="text-gray-400">
+                Source
+              </span>
             </div>
 
           </div>
 
         </div>
 
-        {/* Right Side */}
+        {/* Artwork */}
 
         <div className="flex flex-col items-center justify-center">
 
           <div className="relative flex justify-center">
 
-            {/* Vinyl */}
-
             <motion.div
-              animate={{
-                rotate: 360,
-              }}
+              animate={{ rotate: 360 }}
               transition={{
                 repeat: Infinity,
                 duration: 20,
                 ease: "linear",
               }}
-              className=" absolute top-1/2 -translate-y-1/2 right-6 h-80 w-80 rounded-full bg-black border-12 border-gray-900 shadow-2xl "
+              className="absolute right-6 top-1/2 h-80 w-80 -translate-y-1/2 rounded-full border-[12px] border-gray-900 bg-black shadow-2xl"
             >
-
               <div className="absolute inset-10 rounded-full border-4 border-gray-700" />
 
               <div className="absolute inset-24 rounded-full bg-gray-700" />
 
               <div className="absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white" />
-
             </motion.div>
-
-            {/* Album */}
 
             <motion.img
               key={music.id}
-              initial={{ opacity: 0, scale: .9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: .6 }}
-              whilehover={{
-                scale: 1.05,
-                rotate: -4,
-                rotateX: 2,
+              initial={{
+                opacity: 0,
+                scale: 0.9,
               }}
-              src={music.image}
+              animate={{
+                opacity: 1,
+                scale: 1,
+              }}
+              transition={{ duration: 0.6 }}
+              src={music.cover}
               alt={music.title}
-              className=" relative z-10 h-85 w-85 rounded-[35px] object-cover shadow-[0_0_60px_rgba(34,197,94,.45)]"
-            />
-            <div
-              className=" pointer-events-none absolute left-10 top-8 h-56 w-20 rotate-12 rounded-full bg-white/10 blur-xl "
+              className="relative z-10 h-85 w-85 rounded-[35px] object-cover shadow-[0_0_60px_rgba(34,197,94,.45)]"
             />
 
           </div>
+
           <div className="mt-8 flex justify-center gap-4">
+
             <button
               onClick={prevSlide}
-              className=" rounded-full bg-white/10 p-4 text-white transition hover:bg-green-500"
-              whilehover={{
-                scale: 1.08
-              }}
-
-              whiletap={{
-                scale: .95
-              }}
+              className="rounded-full bg-white/10 p-4 text-white transition hover:bg-green-500"
             >
-
               <FaChevronLeft />
-
             </button>
 
             <button
               onClick={nextSlide}
-              className=" rounded-full bg-white/10 p-4 text-white transition hover:bg-green-500
-        "whilehover={{
-                scale: 1.08
-              }}
-
-              whiletap={{
-                scale: .95
-              }}
+              className="rounded-full bg-white/10 p-4 text-white transition hover:bg-green-500"
             >
               <FaChevronRight />
             </button>
+
           </div>
+
           <div className="mt-6 flex justify-center gap-3">
 
-            {featuredMusic.map((_, index) => (
-
+            {songs.map((song, index) => (
               <button
-                key={index}
+                key={song.id}
                 onClick={() => setCurrent(index)}
-                className={`h-3 rounded-full transition-all
-
-            ${current === index ? "w-10 bg-green-500" : "w-3 bg-white/30"}`}
+                className={`h-3 rounded-full transition-all ${
+                  current === index
+                    ? "w-10 bg-green-500"
+                    : "w-3 bg-white/30"
+                }`}
+                aria-label={`Show ${song.title}`}
               />
             ))}
 
           </div>
+
         </div>
+
       </div>
-    </section >
+    </section>
   );
 };
 

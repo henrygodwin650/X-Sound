@@ -1,25 +1,24 @@
 import React from "react";
-import musicData from "../Home/MusicData";
-import MusicCard from "../Cards/MusicCard";
-
 import { FiTrendingUp } from "react-icons/fi";
 import { FaArrowRight } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
+import MusicCard from "../Cards/MusicCard";
+import { useHomeMusic } from "../../Hooks/useHomeMusic";
+
 const Trending = () => {
-  const trendingMusic = musicData.filter(
-    (music) => music.trending
-  );
+  const {
+    trending,
+    loading,
+    error,
+  } = useHomeMusic();
 
   return (
     <section className="mt-10">
 
-      {/* Header */}
-
       <div className="mb-8 flex items-center justify-between">
 
         <div>
-
           <div className="flex items-center gap-3">
 
             <FiTrendingUp className="text-3xl text-green-400" />
@@ -31,63 +30,42 @@ const Trending = () => {
           </div>
 
           <p className="mt-2 text-gray-400">
-            The hottest tracks people are listening to right now.
+            Popular tracks from Jamendo.
           </p>
-
         </div>
 
-        <button
-          className="
-          flex
-          items-center
-          gap-2
-          rounded-xl
-          border
-          border-green-500/30
-          px-5
-          py-3
-          text-green-400
-          transition
-          hover:bg-green-500
-          hover:text-white
-          "
-          whilehover={{
-            scale: 1.08
-          }}
-
-          whiletap={{
-            scale: .95
-          }}
+        <Link
+          to="/trending-page"
+          className="flex items-center gap-2 rounded-xl border border-green-500/30 px-5 py-3 text-green-400 transition hover:bg-green-500 hover:text-white"
         >
-          <Link to="/trending-page" className="flex items-center justify-center gap-3">
-            View All
-
-            <FaArrowRight  className="flex"/>
-          </Link>
-        </button>
+          View All
+          <FaArrowRight />
+        </Link>
 
       </div>
 
-      {/* Music Grid */}
+      {loading && (
+        <div className="py-10 text-center text-gray-400">
+          Loading trending music...
+        </div>
+      )}
 
-      <div
-        className="
-        grid
-        gap-6
-        sm:grid-cols-2
-        lg:grid-cols-3
-        xl:grid-cols-4
-        "
-      >
-        {trendingMusic.map((music) => (
+      {error && (
+        <div className="rounded-xl bg-red-500/10 p-5 text-center text-red-400">
+          {error}
+        </div>
+      )}
 
-          <MusicCard
-            key={music.id}
-            music={music}
-          />
-
-        ))}
-      </div>
+      {!loading && !error && (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {trending.slice(0, 8).map((music) => (
+            <MusicCard
+              key={music.id}
+              music={music}
+            />
+          ))}
+        </div>
+      )}
 
     </section>
   );

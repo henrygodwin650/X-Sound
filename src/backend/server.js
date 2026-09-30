@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.use("/spotify", spotifyRoutes);
 
-app.get("/", (req, res) => {
+app.get("/home", (req, res) => {
   res.json({
     success: true,
     message: "🎵 XSound Spotify Backend is Running",
