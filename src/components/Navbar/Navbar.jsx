@@ -20,7 +20,7 @@ const MenuLinks = [
   },
   {
     id: 2,
-    name: "Library",
+    name: "Player",
     link: "/player",
     icon: BiLibrary,
   }, {

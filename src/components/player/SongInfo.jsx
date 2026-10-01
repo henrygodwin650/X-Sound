@@ -17,13 +17,12 @@ const SongInfo = ({ song, isPlaying = false }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-3xl border border-white/10 bg-white/10 p-8 shadow-[0_20px_60px_rgba(0,0,0,.35)] backdrop-blur-3xl"
+      className="rounded-2xl border border-white/10 bg-white/10 p-5 shadow-[0_20px_60px_rgba(0,0,0,.35)] backdrop-blur-3xl sm:rounded-3xl sm:p-6 lg:p-8"
     >
-      {/* ================= STATUS ================= */}
-
-      <div className="flex items-center gap-3">
+      {/* Status */}
+      <div className="flex items-center gap-2.5 sm:gap-3">
         <div
-          className={`h-3 w-3 rounded-full ${
+          className={`h-2.5 w-2.5 shrink-0 rounded-full ${
             isPlaying
               ? "animate-pulse bg-green-500"
               : "bg-gray-500"
@@ -31,7 +30,7 @@ const SongInfo = ({ song, isPlaying = false }) => {
         />
 
         <p
-          className={`text-sm uppercase tracking-[4px] ${
+          className={`text-xs uppercase tracking-[2px] sm:text-sm sm:tracking-[4px] ${
             isPlaying
               ? "text-green-400"
               : "text-gray-400"
@@ -41,16 +40,14 @@ const SongInfo = ({ song, isPlaying = false }) => {
         </p>
       </div>
 
-      {/* ================= SONG TITLE ================= */}
-
-      <h1 className="mt-6 break-words text-4xl font-black text-white">
+      {/* Song title */}
+      <h1 className="mt-5 break-words text-2xl font-black leading-tight text-white sm:mt-6 sm:text-3xl lg:text-4xl">
         {song.title || "Unknown Song"}
       </h1>
 
-      {/* ================= ARTIST ================= */}
-
-      <div className="mt-4 flex items-center gap-3">
-        <h2 className="truncate text-xl font-semibold text-white">
+      {/* Artist */}
+      <div className="mt-3 flex min-w-0 items-center gap-2 sm:mt-4 sm:gap-3">
+        <h2 className="truncate text-base font-semibold text-white sm:text-xl">
           {song.artist || "Unknown Artist"}
         </h2>
 
@@ -60,13 +57,12 @@ const SongInfo = ({ song, isPlaying = false }) => {
         />
       </div>
 
-      {/* ================= ALBUM ================= */}
-
+      {/* Album */}
       {song.album && (
-        <div className="mt-8 flex items-center gap-3 text-gray-300">
-          <FiDisc />
+        <div className="mt-6 flex min-w-0 items-center gap-3 text-sm text-gray-300 sm:mt-8">
+          <FiDisc className="shrink-0" />
 
-          <span>
+          <span className="truncate">
             Album:
             <strong className="ml-2 text-white">
               {song.album}
@@ -75,61 +71,55 @@ const SongInfo = ({ song, isPlaying = false }) => {
         </div>
       )}
 
-      {/* ================= SONG DETAILS ================= */}
-
-      <div className="mt-8 grid grid-cols-2 gap-6 md:grid-cols-3">
-        {/* Genre */}
-        <div>
-          <p className="text-sm text-gray-400">
+      {/* Details */}
+      <div className="mt-6 grid grid-cols-2 gap-5 sm:mt-8 sm:gap-6 md:grid-cols-3">
+        <div className="min-w-0">
+          <p className="text-xs text-gray-400 sm:text-sm">
             Genre
           </p>
 
-          <h3 className="mt-2 truncate text-white">
+          <h3 className="mt-1 truncate text-sm text-white sm:mt-2">
             {song.genre || "Music"}
           </h3>
         </div>
 
-        {/* Source */}
-        <div>
-          <p className="text-sm text-gray-400">
+        <div className="min-w-0">
+          <p className="text-xs text-gray-400 sm:text-sm">
             Source
           </p>
 
-          <h3 className="mt-2 text-green-400">
+          <h3 className="mt-1 truncate text-sm text-green-400 sm:mt-2">
             {song.source || "Jamendo"}
           </h3>
         </div>
 
-        {/* Duration */}
-        <div>
-          <p className="text-sm text-gray-400">
+        <div className="min-w-0">
+          <p className="text-xs text-gray-400 sm:text-sm">
             Duration
           </p>
 
-          <h3 className="mt-2 flex items-center gap-2 text-white">
-            <FiClock />
-
+          <h3 className="mt-1 flex items-center gap-2 text-sm text-white sm:mt-2">
+            <FiClock className="shrink-0" />
             {song.duration || "0:00"}
           </h3>
         </div>
       </div>
 
-      {/* ================= PLAYBACK STATUS ================= */}
-
-      <div className="mt-8 flex items-center gap-3 border-t border-white/10 pt-6">
+      {/* Playback status */}
+      <div className="mt-6 flex items-center gap-3 border-t border-white/10 pt-5 sm:mt-8 sm:pt-6">
         {isPlaying ? (
           <>
-            <FiPlayCircle className="text-green-400" />
+            <FiPlayCircle className="shrink-0 text-green-400" />
 
-            <span className="text-sm text-gray-300">
+            <span className="text-xs text-gray-300 sm:text-sm">
               Streaming from Jamendo
             </span>
           </>
         ) : (
           <>
-            <FiPauseCircle className="text-gray-400" />
+            <FiPauseCircle className="shrink-0 text-gray-400" />
 
-            <span className="text-sm text-gray-400">
+            <span className="text-xs text-gray-400 sm:text-sm">
               Playback paused
             </span>
           </>

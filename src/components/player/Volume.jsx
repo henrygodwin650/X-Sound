@@ -16,7 +16,6 @@ const Volume = () => {
     volume > 0 ? volume : 70
   );
 
-  // Keep mute state synchronized with the provider volume.
   useEffect(() => {
     setMuted(volume === 0);
 
@@ -53,57 +52,59 @@ const Volume = () => {
 
   const VolumeIcon = () => {
     if (muted || volume === 0) {
-      return <FiVolumeX size={22} />;
+      return <FiVolumeX size={20} />;
     }
 
     if (volume < 35) {
-      return <FiVolume size={22} />;
+      return <FiVolume size={20} />;
     }
 
     if (volume < 70) {
-      return <FiVolume1 size={22} />;
+      return <FiVolume1 size={20} />;
     }
 
-    return <FiVolume2 size={22} />;
+    return <FiVolume2 size={20} />;
   };
 
   return (
-    <div className="rounded-3xl border border-white/10 bg-white/10 p-6 shadow-[0_20px_60px_rgba(0,0,0,.35)] backdrop-blur-3xl">
-      <div className="mb-5 flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-black/50">
+    <div className="rounded-2xl border border-white/10 bg-white/10 p-4 shadow-[0_20px_60px_rgba(0,0,0,.35)] backdrop-blur-3xl sm:rounded-3xl sm:p-6">
+      <div className="mb-4 flex items-center justify-between sm:mb-5">
+        <h3 className="text-base font-semibold text-white sm:text-lg">
           Volume
         </h3>
 
-        <span className="text-green-400">
-          {muted ? 0 : volume}
+        <span className="text-sm text-green-400">
+          {muted ? 0 : volume}%
         </span>
       </div>
 
-      <div className="flex items-center gap-4">
-        {/* Mute button */}
+      <div className="flex items-center gap-3 sm:gap-4">
+        {/* Mute */}
         <motion.button
           type="button"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={handleMute}
-          className="rounded-full bg-white/10 p-3 text-white transition hover:bg-green-500"
+          className="shrink-0 rounded-full bg-white/10 p-2.5 text-white transition hover:bg-green-500 sm:p-3"
+          aria-label={muted ? "Unmute" : "Mute"}
         >
           <VolumeIcon />
         </motion.button>
 
-        {/* Volume slider */}
+        {/* Slider */}
         <input
           type="range"
           min="0"
           max="100"
           value={volume}
           onChange={handleVolumeChange}
-          className="flex-1 cursor-pointer accent-green-500"
+          className="h-2 flex-1 cursor-pointer accent-green-500"
+          aria-label="Volume"
         />
       </div>
 
       {/* Volume progress */}
-      <div className="mt-5 h-2 overflow-hidden rounded-full bg-white/10">
+      <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/10 sm:mt-5 sm:h-2">
         <motion.div
           animate={{
             width: `${muted ? 0 : volume}%`,

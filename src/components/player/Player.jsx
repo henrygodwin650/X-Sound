@@ -24,87 +24,101 @@ const Player = () => {
   const song = currentSong || fallbackSong;
 
   return (
-    <motion.div
+    <motion.main
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="relative min-h-screen overflow-hidden bg-[#020d0b] px-6 pb-10 pt-24"
+      className="relative min-h-screen overflow-hidden bg-[#020d0b] px-3 pb-10 pt-20 sm:px-5 sm:pt-24 lg:px-8"
     >
-      {/* ================= BACKGROUND ================= */}
-
+      {/* Background */}
       <div className="pointer-events-none absolute inset-0 z-0 bg-[#020d0b]" />
 
-      {/* Green glow */}
-      <div
-        className="
-          pointer-events-none
-          absolute
-          -left-32
-          top-1/4
-          z-0
-          h-72
-          w-72
-          rounded-full
-          bg-green-500/10
-          blur-[120px]
-          sm:h-96
-          sm:w-96
-        "
-      />
+      {/* Green glow - left */}
+      <div className="pointer-events-none absolute -left-32 top-1/4 z-0 h-64 w-64 rounded-full bg-green-500/10 blur-[100px] sm:h-96 sm:w-96 sm:blur-[120px]" />
 
-      <div
-        className="
-          pointer-events-none
-          absolute
-          -right-32
-          bottom-0
-          z-0
-          h-72
-          w-72
-          rounded-full
-          bg-emerald-500/10
-          blur-[120px]
-          sm:h-96
-          sm:w-96
-        "
-      />
+      {/* Green glow - right */}
+      <div className="pointer-events-none absolute -right-32 bottom-0 z-0 h-64 w-64 rounded-full bg-emerald-500/10 blur-[100px] sm:h-96 sm:w-96 sm:blur-[120px]" />
 
-      {/* Dark overlay */}
+      {/* Overlay */}
       <div className="pointer-events-none absolute inset-0 z-0 bg-[#020d0b]/30" />
 
-      {/* ================= PLAYER CONTENT ================= */}
+      {/* Player */}
+      <div className="relative z-10 mx-auto max-w-7xl">
+        {/* =========================
+            MOBILE / TABLET
+        ========================== */}
 
-      <div className="relative z-10 mx-auto grid max-w-7xl gap-8 lg:grid-cols-12">
-        {/* ================= LEFT SIDE ================= */}
+        <div className="grid gap-5 md:grid-cols-2 lg:hidden">
+          {/* Album */}
+          <div className="md:col-span-1">
+            <AlbumArt
+              isPlaying={isPlaying}
+              song={song}
+            />
+          </div>
 
-        <div className="lg:col-span-3">
-          <AlbumArt
-            isPlaying={isPlaying}
-            song={song}
-          />
+          {/* Song info */}
+          <div className="md:col-span-1">
+            <SongInfo
+              song={song}
+              isPlaying={isPlaying}
+            />
+          </div>
+
+          {/* Progress */}
+          <div className="md:col-span-2">
+            <ProgressiveBar />
+          </div>
+
+          {/* Controls */}
+          <div className="md:col-span-2">
+            <PlayerControls />
+          </div>
+
+          {/* Volume */}
+          <div className="md:col-span-2">
+            <Volume />
+          </div>
+
+          {/* Queue */}
+          <div className="md:col-span-2">
+            <Queue />
+          </div>
         </div>
 
-        {/* ================= CENTER ================= */}
+        {/* =========================
+            LARGE DESKTOP
+        ========================== */}
 
-        <div className="space-y-8 lg:col-span-6">
-          <SongInfo
-            song={song}
-            isPlaying={isPlaying}
-          />
+        <div className="hidden gap-8 lg:grid lg:grid-cols-12">
+          {/* Left */}
+          <div className="lg:col-span-3">
+            <AlbumArt
+              isPlaying={isPlaying}
+              song={song}
+            />
+          </div>
 
-          <ProgressiveBar />
+          {/* Center */}
+          <div className="space-y-8 lg:col-span-6">
+            <SongInfo
+              song={song}
+              isPlaying={isPlaying}
+            />
 
-          <PlayerControls />
+            <ProgressiveBar />
 
-          <Volume />
-        </div>
+            <PlayerControls />
 
-        {/* ================= RIGHT SIDE ================= */}
+            <Volume />
+          </div>
 
-        <div className="lg:col-span-3">
-          <Queue />
+          {/* Right */}
+          <div className="lg:col-span-3">
+            <Queue />
+          </div>
         </div>
       </div>
-    </motion.div>
+    </motion.main>
   );
 };
 

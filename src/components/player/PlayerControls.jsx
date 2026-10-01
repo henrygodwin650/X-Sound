@@ -30,9 +30,8 @@ const PlayerControls = () => {
   const disabled = !currentSong;
 
   return (
-    <div className="rounded-3xl border border-white/10 bg-black/20 p-8 shadow-[0_20px_60px_rgba(0,0,0,.35)] backdrop-blur-3xl">
-      <div className="flex items-center justify-center gap-3 sm:gap-5">
-
+    <div className="rounded-2xl border border-white/10 bg-black/20 p-4 shadow-[0_20px_60px_rgba(0,0,0,.35)] backdrop-blur-3xl sm:rounded-3xl sm:p-6 lg:p-8">
+      <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 lg:gap-5">
         {/* Favorite */}
         <motion.button
           type="button"
@@ -40,16 +39,20 @@ const PlayerControls = () => {
           whileTap={!disabled ? { scale: 0.9 } : {}}
           disabled={disabled}
           onClick={() => toggleFavorite(currentSong)}
-          aria-label={liked ? "Remove from favorites" : "Add to favorites"}
-          title={liked ? "Remove from favorites" : "Add to favorites"}
-          className={`shrink-0 rounded-full p-3 transition ${
+          aria-label={
+            liked ? "Remove from favorites" : "Add to favorites"
+          }
+          title={
+            liked ? "Remove from favorites" : "Add to favorites"
+          }
+          className={`shrink-0 rounded-full p-2.5 transition sm:p-3 ${
             liked
               ? "bg-pink-500 text-white"
               : "bg-white/10 text-gray-400 hover:bg-pink-500 hover:text-white"
           } disabled:cursor-not-allowed disabled:opacity-40`}
         >
           <FiHeart
-            size={22}
+            size={18}
             fill={liked ? "currentColor" : "none"}
           />
         </motion.button>
@@ -60,15 +63,19 @@ const PlayerControls = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={toggleShuffle}
-          aria-label={shuffle ? "Disable shuffle" : "Enable shuffle"}
-          title={shuffle ? "Disable shuffle" : "Enable shuffle"}
-          className={`shrink-0 rounded-full p-3 transition ${
+          aria-label={
+            shuffle ? "Disable shuffle" : "Enable shuffle"
+          }
+          title={
+            shuffle ? "Disable shuffle" : "Enable shuffle"
+          }
+          className={`shrink-0 rounded-full p-2.5 transition sm:p-3 ${
             shuffle
               ? "bg-green-500 text-white"
               : "bg-white/10 text-gray-400 hover:bg-green-500 hover:text-white"
           }`}
         >
-          <FiShuffle size={20} />
+          <FiShuffle size={18} />
         </motion.button>
 
         {/* Previous */}
@@ -80,9 +87,9 @@ const PlayerControls = () => {
           onClick={handlePrevious}
           aria-label="Previous song"
           title="Previous song"
-          className="shrink-0 rounded-full bg-white/10 p-4 text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-40"
+          className="shrink-0 rounded-full bg-white/10 p-3 text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-40 sm:p-3.5"
         >
-          <FiSkipBack size={24} />
+          <FiSkipBack size={20} />
         </motion.button>
 
         {/* Play / Pause */}
@@ -94,12 +101,15 @@ const PlayerControls = () => {
           onClick={togglePlay}
           aria-label={isPlaying ? "Pause song" : "Play song"}
           title={isPlaying ? "Pause song" : "Play song"}
-          className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-linear-to-r from-green-500 to-emerald-600 text-white shadow-xl transition disabled:cursor-not-allowed disabled:opacity-40"
+          className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-linear-to-r from-green-500 to-emerald-600 text-white shadow-xl transition hover:from-green-400 hover:to-emerald-500 disabled:cursor-not-allowed disabled:opacity-40 sm:h-16 sm:w-16 lg:h-20 lg:w-20"
         >
           {isPlaying ? (
-            <FiPause size={34} />
+            <FiPause size={25} className="sm:size-7 lg:size-8" />
           ) : (
-            <FiPlay size={34} className="ml-1" />
+            <FiPlay
+              size={25}
+              className="ml-0.5 sm:size-7 lg:size-8"
+            />
           )}
         </motion.button>
 
@@ -112,9 +122,9 @@ const PlayerControls = () => {
           onClick={handleNext}
           aria-label="Next song"
           title="Next song"
-          className="shrink-0 rounded-full bg-white/10 p-4 text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-40"
+          className="shrink-0 rounded-full bg-white/10 p-3 text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-40 sm:p-3.5"
         >
-          <FiSkipForward size={24} />
+          <FiSkipForward size={20} />
         </motion.button>
 
         {/* Repeat */}
@@ -137,13 +147,13 @@ const PlayerControls = () => {
                 ? "Repeat one"
                 : "Disable repeat"
           }
-          className={`relative shrink-0 rounded-full p-3 transition ${
+          className={`relative shrink-0 rounded-full p-2.5 transition sm:p-3 ${
             repeat !== "off"
               ? "bg-green-500 text-white"
               : "bg-white/10 text-gray-400 hover:bg-green-500 hover:text-white"
           }`}
         >
-          <FiRepeat size={20} />
+          <FiRepeat size={18} />
 
           {repeat !== "off" && (
             <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[9px] font-bold text-green-600">
