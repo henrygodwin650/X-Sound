@@ -27,7 +27,21 @@ const Player = () => {
     <motion.main
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="relative min-h-screen overflow-hidden bg-[#020d0b] px-3 pb-10 pt-20 sm:px-5 sm:pt-24 lg:px-8"
+      className="
+        relative
+        min-h-screen
+        w-full
+        max-w-full
+        overflow-x-hidden
+        overflow-y-auto
+        bg-[#020d0b]
+        px-3
+        pb-10
+        pt-20
+        sm:px-5
+        sm:pt-24
+        lg:px-8
+      "
     >
       {/* Background */}
       <div className="pointer-events-none absolute inset-0 z-0 bg-[#020d0b]" />
@@ -42,14 +56,14 @@ const Player = () => {
       <div className="pointer-events-none absolute inset-0 z-0 bg-[#020d0b]/30" />
 
       {/* Player */}
-      <div className="relative z-10 mx-auto max-w-7xl">
+      <div className="relative z-10 mx-auto w-full max-w-7xl min-w-0">
         {/* =========================
             MOBILE / TABLET
         ========================== */}
 
-        <div className="grid gap-5 md:grid-cols-2 lg:hidden">
+        <div className="grid min-w-0 gap-5 md:grid-cols-2 lg:hidden">
           {/* Album */}
-          <div className="md:col-span-1">
+          <div className="min-w-0 md:col-span-1">
             <AlbumArt
               isPlaying={isPlaying}
               song={song}
@@ -57,7 +71,7 @@ const Player = () => {
           </div>
 
           {/* Song info */}
-          <div className="md:col-span-1">
+          <div className="min-w-0 md:col-span-1">
             <SongInfo
               song={song}
               isPlaying={isPlaying}
@@ -65,22 +79,22 @@ const Player = () => {
           </div>
 
           {/* Progress */}
-          <div className="md:col-span-2">
+          <div className="min-w-0 md:col-span-2">
             <ProgressiveBar />
           </div>
 
           {/* Controls */}
-          <div className="md:col-span-2">
+          <div className="min-w-0 md:col-span-2">
             <PlayerControls />
           </div>
 
           {/* Volume */}
-          <div className="md:col-span-2">
+          <div className="min-w-0 md:col-span-2">
             <Volume />
           </div>
 
           {/* Queue */}
-          <div className="md:col-span-2">
+          <div className="min-w-0 md:col-span-2">
             <Queue />
           </div>
         </div>
@@ -89,9 +103,9 @@ const Player = () => {
             LARGE DESKTOP
         ========================== */}
 
-        <div className="hidden gap-8 lg:grid lg:grid-cols-12">
+        <div className="hidden min-w-0 gap-8 lg:grid lg:grid-cols-12">
           {/* Left */}
-          <div className="lg:col-span-3">
+          <div className="min-w-0 lg:col-span-3">
             <AlbumArt
               isPlaying={isPlaying}
               song={song}
@@ -99,7 +113,7 @@ const Player = () => {
           </div>
 
           {/* Center */}
-          <div className="space-y-8 lg:col-span-6">
+          <div className="min-w-0 space-y-8 lg:col-span-6">
             <SongInfo
               song={song}
               isPlaying={isPlaying}
@@ -113,7 +127,7 @@ const Player = () => {
           </div>
 
           {/* Right */}
-          <div className="lg:col-span-3">
+          <div className="min-w-0 lg:col-span-3">
             <Queue />
           </div>
         </div>

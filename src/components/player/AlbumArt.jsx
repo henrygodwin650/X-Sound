@@ -10,7 +10,10 @@ const AlbumArt = ({ song, isPlaying: propIsPlaying }) => {
     isFavorite,
   } = useMusic();
 
+  // Use the passed song first, otherwise use the global current song
   const activeSong = song || currentSong;
+
+  // Use the prop when provided, otherwise use MusicContext state
   const isPlaying = propIsPlaying ?? contextIsPlaying;
 
   if (!activeSong) {
@@ -22,6 +25,8 @@ const AlbumArt = ({ song, isPlaying: propIsPlaying }) => {
   }
 
   const image = activeSong.cover || "";
+
+  // Check whether the current song is in favorites
   const favorite = isFavorite(activeSong.id);
 
   const handleFavorite = () => {
@@ -40,6 +45,7 @@ const AlbumArt = ({ song, isPlaying: propIsPlaying }) => {
         alert("Song page link copied!");
       }
     } catch (error) {
+      // Sharing can be cancelled by the user.
       console.log("Share cancelled:", error);
     }
   };
@@ -48,7 +54,16 @@ const AlbumArt = ({ song, isPlaying: propIsPlaying }) => {
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl border border-white/10 bg-black/80 p-4 shadow-[0_20px_60px_rgba(0,0,0,.35)] backdrop-blur-3xl sm:rounded-3xl sm:p-6"
+      className="
+        rounded-2xl
+        border border-white/10
+        bg-black/80
+        p-4
+        shadow-[0_20px_60px_rgba(0,0,0,.35)]
+        backdrop-blur-3xl
+        sm:rounded-3xl
+        sm:p-6
+      "
     >
       {/* Album Cover */}
       <div className="mx-auto w-full max-w-[280px] sm:max-w-[360px] lg:max-w-none">
@@ -66,32 +81,77 @@ const AlbumArt = ({ song, isPlaying: propIsPlaying }) => {
                 ease: "linear",
               }}
               src={image}
-              alt={activeSong.title}
-              className="aspect-square w-full rounded-full object-cover shadow-2xl"
+              alt={activeSong.title || "Album artwork"}
+              className="
+                aspect-square
+                w-full
+                rounded-full
+                object-cover
+                shadow-2xl
+              "
             />
           ) : (
-            <div className="flex aspect-square w-full items-center justify-center rounded-full bg-white/10 text-sm text-gray-500">
+            <div
+              className="
+                flex
+                aspect-square
+                w-full
+                items-center
+                justify-center
+                rounded-full
+                bg-white/10
+                text-sm
+                text-gray-500
+              "
+            >
               No artwork
             </div>
           )}
 
           {/* Record center */}
-          <div className="absolute left-1/2 top-1/2 h-7 w-7 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-gray-700 bg-black sm:h-10 sm:w-10" />
+          <div
+            className="
+              absolute
+              left-1/2
+              top-1/2
+              h-7
+              w-7
+              -translate-x-1/2
+              -translate-y-1/2
+              rounded-full
+              border-4
+              border-gray-700
+              bg-black
+              sm:h-10
+              sm:w-10
+            "
+          />
         </div>
       </div>
 
       {/* Song information */}
-      <div className="mt-5 flex flex-col item-center justify-center text-center sm:mt-6">
-        <h2 className="truncate text-xl font-bold text-white sm:text-2xl w-70 text-center">
-          {activeSong.title}
+      <div className="mt-5 flex flex-col items-center justify-center text-center sm:mt-6">
+        <h2
+          className="
+            w-full
+            truncate
+            text-center
+            text-xl
+            font-bold
+            text-white
+            sm:text-2xl
+          "
+          title={activeSong.title}
+        >
+          {activeSong.title || "Unknown Song"}
         </h2>
 
-        <p className="mt-1 truncate text-sm text-gray-400">
-          {activeSong.artist}
+        <p className="mt-1 w-full truncate text-sm text-gray-400">
+          {activeSong.artist || "Unknown Artist"}
         </p>
 
         {activeSong.album && (
-          <p className="mt-1 truncate text-xs text-gray-500">
+          <p className="mt-1 w-full truncate text-xs text-gray-500">
             {activeSong.album}
           </p>
         )}
@@ -99,6 +159,7 @@ const AlbumArt = ({ song, isPlaying: propIsPlaying }) => {
 
       {/* Actions */}
       <div className="mt-6 flex justify-center gap-3 sm:mt-8 sm:gap-4">
+        {/* Favorite */}
         <motion.button
           type="button"
           whileHover={{ scale: 1.1 }}
@@ -121,13 +182,22 @@ const AlbumArt = ({ song, isPlaying: propIsPlaying }) => {
           />
         </motion.button>
 
+        {/* Share */}
         <motion.button
           type="button"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={handleShare}
           aria-label="Share song"
-          className="rounded-full bg-white/10 p-3.5 text-white transition hover:bg-green-500 sm:p-4"
+          className="
+            rounded-full
+            bg-white/10
+            p-3.5
+            text-white
+            transition
+            hover:bg-green-500
+            sm:p-4
+          "
         >
           <FiShare2 size={19} />
         </motion.button>
