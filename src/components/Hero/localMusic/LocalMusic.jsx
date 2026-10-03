@@ -1,15 +1,16 @@
-import React, { useState } from 'react'
-import LocalMusicHeader from './localMusicHeader'
-import ImportMusicButton from './ImportMusicButton'
-import LocalSearch from './LocalSearch'
-import EmptyLibrary from './EmptyLibrary'
-import { useLocalMusic } from '../../../Hooks/useLocalMusic'
-import LocalSongCard from './LocalSongCard'
+import React, { useState } from "react";
+import LocalMusicHeader from "./localMusicHeader";
+import ImportMusicButton from "./ImportMusicButton";
+import LocalSearch from "./LocalSearch";
+import EmptyLibrary from "./EmptyLibrary";
+import { useLocalMusic } from "../../../Hooks/useLocalMusic";
+import LocalSongCard from "./LocalSongCard";
 
 const LocalMusic = () => {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("title");
   const [view, setView] = useState("list");
+
   const { songs, clearLibrary } = useLocalMusic();
 
   const filteredSongs = songs.filter(
@@ -22,75 +23,134 @@ const LocalMusic = () => {
   const sortedSongs = [...filteredSongs].sort((a, b) => {
     const aVal = (a[sortBy] || "").toString();
     const bVal = (b[sortBy] || "").toString();
+
     return aVal.localeCompare(bVal);
   });
 
   return (
-    <div className="min-h-screen hero-bg-color p-6 pt-24">
+    <div className="min-h-screen overflow-x-hidden hero-bg-color px-3 pb-24 pt-20 sm:px-5 sm:pt-24 md:px-6">
       <LocalMusicHeader />
 
-      <div className="mt-8 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-        <LocalSearch search={search} setSearch={setSearch} />
-        <ImportMusicButton />
-        <button
-          onClick={clearLibrary}
-          className="rounded-xl bg-red-500 px-5 py-2 text-white transition hover:bg-red-600"
-        >
-          Clear Library
-        </button>
+      {/* Search + actions */}
+      <div
+        className="
+          mt-6 flex flex-col gap-3
+          sm:mt-8
+          md:flex-row md:items-center md:justify-between
+        "
+      >
+        <LocalSearch
+          search={search}
+          setSearch={setSearch}
+        />
+
+        <div className="flex w-full flex-col gap-3 sm:flex-row md:w-auto">
+          <ImportMusicButton />
+
+          <button
+            type="button"
+            onClick={clearLibrary}
+            className="
+              w-full rounded-xl
+              bg-red-500 px-5 py-3
+              text-sm font-semibold text-white
+              transition hover:bg-red-600
+              sm:w-auto
+            "
+          >
+            Clear Library
+          </button>
+        </div>
       </div>
 
-      <div className="mt-10">
-        <div className="flex items-center justify-between">
-          <div className="flex gap-3">
+      {/* Library controls */}
+      <div className="mt-8 sm:mt-10">
+        <div
+          className="
+            flex flex-col gap-4
+            sm:flex-row sm:items-center sm:justify-between
+          "
+        >
+          {/* View buttons */}
+          <div className="flex w-full gap-2 sm:w-auto sm:gap-3">
             <button
-              className={`rounded-xl border px-6 py-2 text-white transition ${
-                view === "list"
-                  ? "bg-green-500 border-green-500"
-                  : "bg-white/10 border-white/10 hover:bg-green-500"
-              }`}
+              type="button"
+              className={`
+                flex-1 rounded-xl border px-4 py-2.5
+                text-sm font-semibold text-white
+                transition
+                sm:flex-none sm:px-6
+                ${view === "list"
+                  ? "border-green-500 bg-green-500"
+                  : "border-white/10 bg-white/10 hover:bg-green-500"
+                }
+              `}
               onClick={() => setView("list")}
             >
               List
             </button>
+
             <button
-              className={`rounded-xl border px-6 py-2 text-white transition ${
-                view === "grid"
-                  ? "bg-blue-500 border-blue-500"
-                  : "bg-white/10 border-white/10 hover:bg-blue-500"
-              }`}
+              type="button"
+              className={`
+                flex-1 rounded-xl border px-4 py-2.5
+                text-sm font-semibold text-white
+                transition
+                sm:flex-none sm:px-6
+                ${view === "grid"
+                  ? "border-blue-500 bg-blue-500"
+                  : "border-white/10 bg-white/10 hover:bg-blue-500"
+                }
+              `}
               onClick={() => setView("grid")}
             >
               Grid
             </button>
           </div>
 
+          {/* Sort */}
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="rounded-xl border border-green-500 bg-white/20 px-4 py-2 text-green-400"
+            className="
+              w-full rounded-xl
+              border border-green-500
+              bg-white/10
+              px-4 py-2.5
+              text-sm text-green-400
+              outline-none
+              focus:ring-2 focus:ring-green-500/30
+              sm:w-auto
+            "
           >
-            <option value="title">Title</option>
-            <option value="artist">Artist</option>
-            <option value="album">Album</option>
-            <option value="year">Year</option>
+            <option value="title">Sort by Title</option>
+            <option value="artist">Sort by Artist</option>
+            <option value="album">Sort by Album</option>
+            <option value="year">Sort by Year</option>
           </select>
         </div>
 
+        {/* Songs */}
         {sortedSongs.length === 0 ? (
-          <div className="mt-8">
+          <div className="mt-6 sm:mt-8">
             <EmptyLibrary />
           </div>
         ) : (
           <div
-            className={`mt-8 ${
-              view === "grid"
-                ? "grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-                : "space-y-2"
-            }`}
+            className={`
+              mt-6 sm:mt-8
+              ${view === "grid"
+                ? "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                : "space-y-3"
+              }
+            `}
           >
             {sortedSongs.map((song) => (
-              <LocalSongCard key={song.id} song={song} />
+              <LocalSongCard
+                key={song.id}
+                song={song}
+                songs={songs}
+              />
             ))}
           </div>
         )}

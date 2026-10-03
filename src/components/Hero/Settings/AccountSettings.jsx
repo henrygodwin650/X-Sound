@@ -1,15 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   deleteUser,
   EmailAuthProvider,
   reauthenticateWithCredential,
   sendEmailVerification,
-  updatePassword
-} from 'firebase/auth';
+  updatePassword,
+} from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { FaLock, FaSave, FaTrash, FaShieldAlt } from 'react-icons/fa';
-import { auth, db } from '../../../backend/firebase';
-import { deleteDoc, doc } from 'firebase/firestore';
+import {
+  FaLock,
+  FaSave,
+  FaTrash,
+  FaShieldAlt,
+} from "react-icons/fa";
+import { auth, db } from "../../../backend/firebase";
+import { deleteDoc, doc } from "firebase/firestore";
 
 const AccountSettings = () => {
   const [formData, setFormData] = useState({
@@ -19,6 +24,7 @@ const AccountSettings = () => {
   });
 
   const navigate = useNavigate();
+
   const [password, setPassword] = useState("");
   const [saving, setSaving] = useState(false);
   const [emailVerified, setEmailVerified] = useState(false);
@@ -28,6 +34,7 @@ const AccountSettings = () => {
 
   useEffect(() => {
     const user = auth.currentUser;
+
     if (user) {
       setEmailVerified(user.emailVerified);
     }
@@ -35,6 +42,7 @@ const AccountSettings = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -43,23 +51,36 @@ const AccountSettings = () => {
 
   const handleDeleteAccount = async () => {
     if (deleteText !== "DELETE") {
-      alert('Please type "DELETE" to continue');
+      alert('Please type "DELETE" to continue.');
       return;
     }
 
     const user = auth.currentUser;
+
     if (!user) return;
+
+    if (!password) {
+      alert("Enter your current password.");
+      return;
+    }
 
     try {
       setDeleting(true);
-      const credential = EmailAuthProvider.credential(user.email, password);
+
+      const credential = EmailAuthProvider.credential(
+        user.email,
+        password
+      );
+
       await reauthenticateWithCredential(user, credential);
+
       await deleteDoc(doc(db, "users", user.uid));
       await deleteUser(user);
-      alert("Account deleted successfully");
+
+      alert("Account deleted successfully.");
       navigate("/login");
     } catch (error) {
-      console.error(error);
+      console.error("Delete account error:", error);
       alert(error.message);
     } finally {
       setDeleting(false);
@@ -69,12 +90,16 @@ const AccountSettings = () => {
   const handleVerifyEmail = async () => {
     try {
       const user = auth.currentUser;
+
       if (!user) return;
+
       setSendingEmail(true);
+
       await sendEmailVerification(user);
+
       alert("Verification email has been sent.");
     } catch (error) {
-      console.error(error);
+      console.error("Verification error:", error);
       alert(error.message);
     } finally {
       setSendingEmail(false);
@@ -85,42 +110,49 @@ const AccountSettings = () => {
     e.preventDefault();
 
     if (!formData.currentPassword) {
-      alert("Enter your current password");
+      alert("Enter your current password.");
       return;
     }
+
     if (!formData.newPassword) {
-      alert("Enter a new password");
+      alert("Enter a new password.");
       return;
     }
+
     if (formData.newPassword.length < 6) {
-      alert("Password must be at least 6 characters");
+      alert("Password must be at least 6 characters.");
       return;
     }
+
     if (formData.newPassword !== formData.confirmPassword) {
-      alert("Passwords do not match");
+      alert("Passwords do not match.");
       return;
     }
 
     try {
       setSaving(true);
+
       const user = auth.currentUser;
+
       if (!user) return;
 
       const credential = EmailAuthProvider.credential(
         user.email,
         formData.currentPassword
       );
+
       await reauthenticateWithCredential(user, credential);
       await updatePassword(user, formData.newPassword);
 
-      alert("Password updated successfully");
+      alert("Password updated successfully.");
+
       setFormData({
         currentPassword: "",
         newPassword: "",
         confirmPassword: "",
       });
     } catch (error) {
-      console.error(error);
+      console.error("Password update error:", error);
       alert(error.message);
     } finally {
       setSaving(false);
@@ -129,161 +161,183 @@ const AccountSettings = () => {
 
   const refreshVerificationStatus = async () => {
     const user = auth.currentUser;
+
     if (!user) return;
-    await user.reload();
-    setEmailVerified(user.emailVerified);
+
+    try {
+      await user.reload();
+
+      setEmailVerified(auth.currentUser?.emailVerified || false);
+    } catch (error) {
+      console.error("Refresh verification error:", error);
+    }
   };
 
   return (
-    <div className="space-y-8">
-      {/* Change Password */}
+    <div className="space-y-4 sm:space-y-6">
+      {/* CHANGE PASSWORD */}
       <form
         onSubmit={handleSubmit}
-        className="rounded-2xl border border-white/10 bg-white/10 p-6 backdrop-blur-xl"
+        className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl sm:p-6"
       >
-        <div className="mb-6 flex items-center gap-3">
-          <FaLock className="text-xl text-green-400" />
-          <h2 className="text-xl font-bold text-white">Change Password</h2>
+        <div className="mb-5 flex items-center gap-3 sm:mb-6">
+          <FaLock className="text-lg text-green-400 sm:text-xl" />
+
+          <h2 className="text-lg font-bold text-white sm:text-xl">
+            Change Password
+          </h2>
         </div>
 
-        <div className="space-y-5">
-          <div>
-            <label className="mb-2 block text-sm text-gray-300">
-              Current Password
-            </label>
-            <input
-              type="password"
-              name="currentPassword"
-              value={formData.currentPassword}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none focus:border-green-500"
-            />
-          </div>
+        <div className="space-y-4 sm:space-y-5">
+          {[
+            {
+              name: "currentPassword",
+              label: "Current Password",
+            },
+            {
+              name: "newPassword",
+              label: "New Password",
+            },
+            {
+              name: "confirmPassword",
+              label: "Confirm Password",
+            },
+          ].map((field) => (
+            <div key={field.name}>
+              <label className="mb-2 block text-sm text-gray-300">
+                {field.label}
+              </label>
 
-          <div>
-            <label className="mb-2 block text-sm text-gray-300">
-              New Password
-            </label>
-            <input
-              type="password"
-              name="newPassword"
-              value={formData.newPassword}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none focus:border-green-500"
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm text-gray-300">
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none focus:border-green-500"
-            />
-          </div>
+              <input
+                type="password"
+                name={field.name}
+                value={formData[field.name]}
+                onChange={handleChange}
+                autoComplete="new-password"
+                className="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-sm text-white outline-none transition focus:border-green-500 sm:text-base"
+              />
+            </div>
+          ))}
         </div>
 
         <button
           type="submit"
           disabled={saving}
-          className="mt-8 flex w-full items-center justify-center gap-3 rounded-xl bg-green-500 px-5 py-3 font-semibold text-white transition hover:bg-green-600 disabled:opacity-60"
+          className="mt-6 flex w-full items-center justify-center gap-3 rounded-xl bg-green-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-green-600 disabled:opacity-60 sm:mt-8 sm:text-base"
         >
           <FaSave />
+
           {saving ? "Saving..." : "Save Changes"}
         </button>
       </form>
 
-      {/* Email Verification */}
-      <div className="rounded-2xl border border-white/10 bg-white/10 p-6 backdrop-blur-xl">
+      {/* EMAIL VERIFICATION */}
+      <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl sm:p-6">
         <div className="mb-4 flex items-center gap-3">
-          <FaShieldAlt className="text-xl text-green-400" />
-          <h2 className="text-xl font-bold text-white">Email Verification</h2>
+          <FaShieldAlt className="text-lg text-green-400 sm:text-xl" />
+
+          <h2 className="text-lg font-bold text-white sm:text-xl">
+            Email Verification
+          </h2>
         </div>
 
-        <p className="text-white">
-          Email:{" "}
-          <span className="ms-2 text-green-400">
-            {auth.currentUser?.email}
-          </span>
-        </p>
+        <div className="space-y-3">
+          <p className="break-all text-sm text-white sm:text-base">
+            Email:{" "}
+            <span className="text-green-400">
+              {auth.currentUser?.email || "No email"}
+            </span>
+          </p>
 
-        <p className="mt-2 text-white">
-          Status:{" "}
-          {emailVerified ? (
-            <span className="ms-2 font-semibold text-green-500">
-              ✅ Verified
-            </span>
-          ) : (
-            <span className="ms-2 font-semibold text-red-500">
-              ❌ Not Verified
-            </span>
+          <p className="text-sm text-white sm:text-base">
+            Status:{" "}
+            {emailVerified ? (
+              <span className="font-semibold text-green-500">
+                ✅ Verified
+              </span>
+            ) : (
+              <span className="font-semibold text-red-500">
+                ❌ Not Verified
+              </span>
+            )}
+          </p>
+        </div>
+
+        <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+          {!emailVerified && (
+            <button
+              type="button"
+              onClick={handleVerifyEmail}
+              disabled={sendingEmail}
+              className="rounded-xl bg-green-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-green-600 disabled:opacity-60 sm:text-base"
+            >
+              {sendingEmail
+                ? "Sending..."
+                : "Send Verification Email"}
+            </button>
           )}
-        </p>
 
-        {!emailVerified && (
           <button
-            onClick={handleVerifyEmail}
-            disabled={sendingEmail}
-            className="mt-5 rounded-xl bg-green-500 px-5 py-3 text-white disabled:opacity-60"
+            type="button"
+            onClick={refreshVerificationStatus}
+            className="rounded-xl border border-white/20 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10 sm:text-base"
           >
-            {sendingEmail ? "Sending..." : "Send Verification Email"}
+            Refresh Status
           </button>
-        )}
-
-        <button
-          onClick={refreshVerificationStatus}
-          className="mt-3 rounded-xl border border-white/20 px-4 py-2 text-white"
-        >
-          Refresh Status
-        </button>
+        </div>
       </div>
 
-      {/* Delete Account */}
-      <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-6">
+      {/* DELETE ACCOUNT */}
+      <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-4 sm:p-6">
         <div className="mb-4 flex items-center gap-3">
-          <FaTrash className="text-xl text-red-500" />
-          <h2 className="text-xl font-bold text-red-500">Delete Account</h2>
+          <FaTrash className="text-lg text-red-500 sm:text-xl" />
+
+          <h2 className="text-lg font-bold text-red-500 sm:text-xl">
+            Delete Account
+          </h2>
         </div>
 
-        <p className="mt-4 text-gray-300">
-          Deleting your account will permanently remove your profile, playlists,
-          favorites and settings. This action cannot be undone.
+        <p className="text-sm leading-6 text-gray-300 sm:text-base">
+          Deleting your account will permanently remove your profile,
+          playlists, favorites and settings. This action cannot be undone.
         </p>
 
         <div className="mt-5">
           <label className="mb-2 block text-sm text-gray-300">
-            Current Password (required)
+            Current Password
           </label>
+
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none focus:border-red-500"
+            className="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-sm text-white outline-none focus:border-red-500 sm:text-base"
           />
         </div>
 
         <div className="mt-5">
           <label className="mb-2 block text-sm text-gray-300">
-            Type <span className="font-bold text-red-500">DELETE</span> to
-            confirm
+            Type{" "}
+            <span className="font-bold text-red-500">
+              DELETE
+            </span>{" "}
+            to confirm
           </label>
+
           <input
             type="text"
             value={deleteText}
             onChange={(e) => setDeleteText(e.target.value)}
-            className="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none focus:border-red-500"
             placeholder="DELETE"
+            className="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-sm text-white outline-none focus:border-red-500 sm:text-base"
           />
         </div>
 
         <button
+          type="button"
           onClick={handleDeleteAccount}
           disabled={deleting}
-          className="mt-6 w-full rounded-xl bg-red-600 py-3 font-semibold text-white hover:bg-red-700 disabled:opacity-60"
+          className="mt-5 w-full rounded-xl bg-red-600 py-3 text-sm font-semibold text-white transition hover:bg-red-700 disabled:opacity-60 sm:mt-6 sm:text-base"
         >
           {deleting ? "Deleting..." : "Delete Account"}
         </button>

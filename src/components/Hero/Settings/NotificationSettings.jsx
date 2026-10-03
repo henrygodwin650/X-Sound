@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { auth, db } from '../../../backend/firebase';
-import { doc, updateDoc, getDoc } from 'firebase/firestore';
+import React, { useEffect, useState } from "react";
+import { auth, db } from "../../../backend/firebase";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
 
 const NotificationSettings = () => {
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+
   const [notifications, setNotifications] = useState({
     push: true,
     email: true,
@@ -16,6 +17,7 @@ const NotificationSettings = () => {
 
   const handleToggle = (e) => {
     const { name, checked } = e.target;
+
     setNotifications((prev) => ({
       ...prev,
       [name]: checked,
@@ -27,7 +29,9 @@ const NotificationSettings = () => {
 
     try {
       setSaving(true);
+
       const user = auth.currentUser;
+
       if (!user) return;
 
       await updateDoc(doc(db, "users", user.uid), {
@@ -46,18 +50,24 @@ const NotificationSettings = () => {
   const loadNotifications = async () => {
     try {
       const user = auth.currentUser;
+
       if (!user) {
         setLoading(false);
         return;
       }
 
-      const docRef = doc(db, "users", user.uid);
-      const docSnap = await getDoc(docRef);
+      const docSnap = await getDoc(
+        doc(db, "users", user.uid)
+      );
 
       if (docSnap.exists()) {
         const data = docSnap.data();
+
         if (data.notifications) {
-          setNotifications(data.notifications);
+          setNotifications((prev) => ({
+            ...prev,
+            ...data.notifications,
+          }));
         }
       }
     } catch (error) {
@@ -70,14 +80,6 @@ const NotificationSettings = () => {
   useEffect(() => {
     loadNotifications();
   }, []);
-
-  if (loading) {
-    return (
-      <div className="py-10 text-center text-white">
-        Loading notifications...
-      </div>
-    );
-  }
 
   const settings = [
     {
@@ -93,7 +95,8 @@ const NotificationSettings = () => {
     {
       name: "newMusic",
       title: "New Music Releases",
-      description: "Get notified when your favorite artists release new songs.",
+      description:
+        "Get notified when your favorite artists release new songs.",
     },
     {
       name: "playlistUpdates",
@@ -108,27 +111,42 @@ const NotificationSettings = () => {
     {
       name: "weeklyRecommendations",
       title: "Weekly Recommendations",
-      description: "Receive personalized music recommendations every week.",
+      description:
+        "Receive personalized music recommendations every week.",
     },
   ];
+
+  if (loading) {
+    return (
+      <div className="py-10 text-center text-sm text-white">
+        Loading notifications...
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
       {settings.map((item) => (
         <div
           key={item.name}
-          className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl"
+          className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl sm:p-5"
         >
-          <div>
-            <h3 className="font-semibold text-white">{item.title}</h3>
-            <p className="text-sm text-gray-400">{item.description}</p>
+          <div className="min-w-0">
+            <h3 className="text-sm font-semibold text-white sm:text-base">
+              {item.title}
+            </h3>
+
+            <p className="mt-1 text-xs leading-5 text-gray-400 sm:text-sm">
+              {item.description}
+            </p>
           </div>
+
           <input
             type="checkbox"
             name={item.name}
             checked={notifications[item.name]}
             onChange={handleToggle}
-            className="h-5 w-5 accent-green-500"
+            className="h-5 w-5 shrink-0 accent-green-500"
           />
         </div>
       ))}
@@ -136,7 +154,7 @@ const NotificationSettings = () => {
       <button
         type="submit"
         disabled={saving}
-        className="mt-6 w-full rounded-2xl bg-green-500 py-3 text-lg font-semibold text-white transition hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-60"
+        className="mt-3 w-full rounded-2xl bg-green-500 py-3 text-sm font-semibold text-white transition hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-60 sm:text-base"
       >
         {saving ? "Saving..." : "Save Changes"}
       </button>
@@ -144,4 +162,4 @@ const NotificationSettings = () => {
   );
 };
 
-export default NotificationSettings
+export default NotificationSettings;

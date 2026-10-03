@@ -1,6 +1,6 @@
-import { doc, updateDoc, getDoc } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react'
-import { auth, db } from '../../../backend/firebase';
+import { doc, updateDoc, getDoc } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { auth, db } from "../../../backend/firebase";
 
 const AppearanceSettings = () => {
   const [appearance, setAppearance] = useState({
@@ -9,11 +9,13 @@ const AppearanceSettings = () => {
     glassEffect: true,
     accentColor: "green",
   });
+
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+
     setAppearance((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
@@ -25,11 +27,15 @@ const AppearanceSettings = () => {
       document.documentElement.classList.add("dark");
     } else if (theme === "light") {
       document.documentElement.classList.remove("dark");
-    } else if (theme === "system") {
+    } else {
       const preferDark = window.matchMedia(
         "(prefers-color-scheme: dark)"
       ).matches;
-      document.documentElement.classList.toggle("dark", preferDark);
+
+      document.documentElement.classList.toggle(
+        "dark",
+        preferDark
+      );
     }
   };
 
@@ -38,7 +44,9 @@ const AppearanceSettings = () => {
 
     try {
       setSaving(true);
+
       const user = auth.currentUser;
+
       if (!user) return;
 
       await updateDoc(doc(db, "users", user.uid), {
@@ -46,6 +54,7 @@ const AppearanceSettings = () => {
       });
 
       applyTheme(appearance.theme);
+
       alert("Appearance settings updated successfully.");
     } catch (error) {
       console.error(error);
@@ -58,22 +67,27 @@ const AppearanceSettings = () => {
   const loadAppearance = async () => {
     try {
       const user = auth.currentUser;
+
       if (!user) {
         setLoading(false);
         return;
       }
 
-      const docRef = doc(db, "users", user.uid);
-      const docSnap = await getDoc(docRef);
+      const docSnap = await getDoc(
+        doc(db, "users", user.uid)
+      );
 
       if (docSnap.exists()) {
         const data = docSnap.data();
+
         if (data.appearance) {
-          setAppearance((prev) => ({
-            ...prev,
+          const settings = {
+            ...appearance,
             ...data.appearance,
-          }));
-          applyTheme(data.appearance.theme || "dark");
+          };
+
+          setAppearance(settings);
+          applyTheme(settings.theme);
         }
       }
     } catch (error) {
@@ -89,23 +103,25 @@ const AppearanceSettings = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-10 text-white">
+      <div className="flex items-center justify-center py-10 text-sm text-white">
         Loading appearance settings...
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3">
-      <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl">
-        <label className="mb-3 block text-lg font-semibold text-white">
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {/* THEME */}
+      <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl sm:p-5">
+        <label className="mb-3 block text-base font-semibold text-white sm:text-lg">
           Theme
         </label>
+
         <select
           name="theme"
           value={appearance.theme}
           onChange={handleChange}
-          className="w-full rounded-xl border border-white/10 bg-zinc-900 px-4 py-3 text-white outline-none"
+          className="w-full rounded-xl border border-white/10 bg-zinc-900 px-4 py-3 text-sm text-white outline-none sm:text-base"
         >
           <option value="dark">🌙 Dark</option>
           <option value="light">☀️ Light</option>
@@ -113,47 +129,59 @@ const AppearanceSettings = () => {
         </select>
       </div>
 
-      <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/10 p-4">
-        <div>
-          <h3 className="font-semibold text-white">Enable Animations</h3>
-          <p className="text-sm text-gray-400">
+      {/* ANIMATIONS */}
+      <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl sm:p-5">
+        <div className="min-w-0">
+          <h3 className="text-sm font-semibold text-white sm:text-base">
+            Enable Animations
+          </h3>
+
+          <p className="mt-1 text-xs leading-5 text-gray-400 sm:text-sm">
             Smooth page transitions and effects.
           </p>
         </div>
+
         <input
           type="checkbox"
           name="animations"
           checked={appearance.animations}
           onChange={handleChange}
-          className="h-5 w-5 accent-green-500"
+          className="h-5 w-5 shrink-0 accent-green-500"
         />
       </div>
 
-      <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/10 p-4">
-        <div>
-          <h3 className="font-semibold text-white">Glass Effect</h3>
-          <p className="text-sm text-gray-400">
+      {/* GLASS */}
+      <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl sm:p-5">
+        <div className="min-w-0">
+          <h3 className="text-sm font-semibold text-white sm:text-base">
+            Glass Effect
+          </h3>
+
+          <p className="mt-1 text-xs leading-5 text-gray-400 sm:text-sm">
             Enable glassmorphism throughout the app.
           </p>
         </div>
+
         <input
           type="checkbox"
           name="glassEffect"
           checked={appearance.glassEffect}
           onChange={handleChange}
-          className="h-5 w-5 accent-green-500"
+          className="h-5 w-5 shrink-0 accent-green-500"
         />
       </div>
 
-      <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
-        <label className="mb-3 block font-semibold text-white">
+      {/* ACCENT */}
+      <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl sm:p-5">
+        <label className="mb-3 block text-base font-semibold text-white sm:text-lg">
           Accent Color
         </label>
+
         <select
           name="accentColor"
           value={appearance.accentColor}
           onChange={handleChange}
-          className="w-full rounded-xl bg-zinc-900 p-3 text-white"
+          className="w-full rounded-xl bg-zinc-900 p-3 text-sm text-white sm:text-base"
         >
           <option value="green">Green</option>
           <option value="blue">Blue</option>
@@ -165,7 +193,7 @@ const AppearanceSettings = () => {
       <button
         type="submit"
         disabled={saving}
-        className="mt-6 w-full rounded-2xl bg-green-500 py-3 text-lg font-semibold text-white transition hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-60"
+        className="w-full rounded-2xl bg-green-500 py-3 text-sm font-semibold text-white transition hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-60 sm:text-base"
       >
         {saving ? "Saving Changes..." : "Save Changes"}
       </button>
@@ -173,4 +201,4 @@ const AppearanceSettings = () => {
   );
 };
 
-export default AppearanceSettings
+export default AppearanceSettings;

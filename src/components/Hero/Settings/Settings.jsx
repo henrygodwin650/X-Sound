@@ -6,7 +6,6 @@ import {
   FaHeart,
   FaMusic,
   FaUser,
-  FaBellSlash,
   FaLock,
   FaPlay,
   FaPaintRoller,
@@ -49,55 +48,64 @@ const Settings = () => {
       prev === section ? null : section
     );
   };
+
   return (
-    <div className="relative min-h-screen overflow-hidden bg-linear-to-br from-black via-gray-900 to-green-950">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-black via-gray-900 to-green-950">
+      {/* BACKGROUND GLOW */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -left-20 top-0 h-72 w-72 rounded-full bg-green-500/20 blur-[120px] sm:h-96 sm:w-96 sm:blur-[140px]" />
 
-      <div className="absolute inset-0">
-
-        <div className="absolute -left-20 top-0 h-96 w-96 rounded-full bg-green-500/20 blur-[140px]" />
-
-        <div className="absolute bottom-0 right-0 h-112 w-md rounded-full bg-emerald-500/20 blur-[170px]" />
-
+        <div className="absolute bottom-0 right-0 h-80 w-80 rounded-full bg-emerald-500/20 blur-[130px] sm:h-[28rem] sm:w-[28rem] sm:blur-[170px]" />
       </div>
-      {notes.map((note) => (
-        <motion.div
-          key={note.id}
-          initial={{ y: "110vh", opacity: 0 }}
-          animate={{
-            y: "-20vh",
-            opacity: [0, .5, .8, 0],
-          }}
-          transition={{
-            duration: note.duration,
-            delay: note.delay,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-          style={{
-            left: note.left,
-            fontSize: note.size,
-          }}
-          className="absolute text-green-400/20"
-        >
-          <FaMusic />
-        </motion.div>
-      ))}
-      <div className="relative z-10 pt-24 pb-10">
 
-        <div className="flex items-center justify-center gap-4 text-white">
+      {/* FLOATING NOTES */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        {notes.map((note) => (
+          <motion.div
+            key={note.id}
+            initial={{
+              y: "110vh",
+              opacity: 0,
+            }}
+            animate={{
+              y: "-20vh",
+              opacity: [0, 0.5, 0.8, 0],
+            }}
+            transition={{
+              duration: note.duration,
+              delay: note.delay,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+            style={{
+              left: note.left,
+              fontSize: note.size,
+            }}
+            className="absolute text-green-400/20"
+          >
+            <FaMusic />
+          </motion.div>
+        ))}
+      </div>
 
-          <FaGear className="text-4xl text-green-400" />
+      {/* PAGE HEADER */}
+      <div className="relative z-10 px-4 pb-6 pt-24 sm:pb-8 sm:pt-28">
+        <div className="flex items-center justify-center gap-3 text-white sm:gap-4">
+          <FaGear className="text-2xl text-green-400 sm:text-4xl" />
 
-          <h1 className="text-4xl font-black">
+          <h1 className="text-3xl font-black sm:text-4xl">
             Settings
           </h1>
-
         </div>
 
+        <p className="mx-auto mt-3 max-w-lg text-center text-xs text-gray-400 sm:text-sm">
+          Customize your XSound account and listening experience.
+        </p>
       </div>
-      <ul className="relative z-10 mx-auto flex max-w-4xl flex-col gap-4 mb-8 px-4 pb-10">
 
-        {/* Profile  */}
+      {/* SETTINGS */}
+      <ul className="relative z-10 mx-auto mb-8 flex w-full max-w-4xl flex-col gap-3 px-3 pb-10 sm:gap-4 sm:px-4">
+        {/* PROFILE */}
         <SettingItems
           title="Profile"
           icon={<FaUser />}
@@ -108,7 +116,7 @@ const Settings = () => {
           <ProfileForm />
         </SettingItems>
 
-        {/* Account  */}
+        {/* ACCOUNT */}
         <SettingItems
           title="Account & Security"
           icon={<FaLock />}
@@ -119,7 +127,7 @@ const Settings = () => {
           <AccountSettings />
         </SettingItems>
 
-        {/* Notification Settings */}
+        {/* NOTIFICATIONS */}
         <SettingItems
           title="Notifications"
           icon={<FaBell />}
@@ -129,8 +137,8 @@ const Settings = () => {
         >
           <NotificationSettings />
         </SettingItems>
-        
-        {/* Appearance  */}
+
+        {/* APPEARANCE */}
         <SettingItems
           title="Appearance"
           icon={<FaPaintRoller />}
@@ -141,7 +149,7 @@ const Settings = () => {
           <AppearanceSettings />
         </SettingItems>
 
-        {/* Playback  */}
+        {/* PLAYBACK */}
         <SettingItems
           title="Playback"
           icon={<FaPlay />}
@@ -152,7 +160,7 @@ const Settings = () => {
           <PlaybackSettings />
         </SettingItems>
 
-        {/* Favorites  */}
+        {/* FAVORITES */}
         <SettingItems
           title="Favorites"
           icon={<FaHeart />}
@@ -163,7 +171,7 @@ const Settings = () => {
           <FavoriteSettings />
         </SettingItems>
 
-        {/* Playlist  */}
+        {/* PLAYLIST */}
         <SettingItems
           title="Playlist"
           icon={<FaMusic />}
@@ -174,7 +182,7 @@ const Settings = () => {
           <PlayListSettings />
         </SettingItems>
 
-        {/* About Settings */}
+        {/* ABOUT */}
         <SettingItems
           title="About XSound"
           icon={<FaCircleInfo />}
@@ -185,21 +193,20 @@ const Settings = () => {
           <AboutSettings />
         </SettingItems>
 
-        {/* Logout Settings  */}
+        {/* LOGOUT */}
         <SettingItems
           title="Logout"
           icon={<FiLogOut />}
-          titleColor="text-red-500"
+          titleClass="text-red-500"
           section="logout"
           activeSection={activeSection}
           toggleSection={toggleSection}
         >
           <LogoutSettings />
         </SettingItems>
-
       </ul>
     </div>
-  )
-}
+  );
+};
 
 export default Settings;

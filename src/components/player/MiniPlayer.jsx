@@ -15,8 +15,8 @@ const MiniPlayer = () => {
     currentSong,
     isPlaying,
     togglePlay,
-    nextSong,
-    previousSong,
+    handleNext,
+    handlePrevious,
     currentTime,
     duration,
   } = useMusic();
@@ -102,7 +102,7 @@ const MiniPlayer = () => {
           <div className="flex shrink-0 items-center gap-3 sm:gap-5">
             <button
               type="button"
-              onClick={previousSong}
+              onClick={handlePrevious}
               aria-label="Previous song"
               className="hidden text-gray-300 transition hover:text-green-400 sm:block"
             >
@@ -124,7 +124,7 @@ const MiniPlayer = () => {
 
             <button
               type="button"
-              onClick={nextSong}
+              onClick={handleNext}
               aria-label="Next song"
               className="hidden text-gray-300 transition hover:text-green-400 sm:block"
             >
@@ -170,7 +170,7 @@ const MiniPlayer = () => {
               <div className="flex items-center justify-between gap-5 sm:justify-end">
                 <button
                   type="button"
-                  onClick={previousSong}
+                  onClick={handlePrevious}
                   aria-label="Previous song"
                   className="text-gray-300 transition hover:text-green-400 sm:hidden"
                 >
@@ -183,7 +183,7 @@ const MiniPlayer = () => {
 
                 <button
                   type="button"
-                  onClick={nextSong}
+                  onClick={handleNext}
                   aria-label="Next song"
                   className="text-gray-300 transition hover:text-green-400 sm:hidden"
                 >

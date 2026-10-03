@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from "react";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { auth, db } from "../../../backend/firebase";
 
 const PlaybackSettings = () => {
-  // States
   const [playback, setPlayback] = useState({
     autoplay: true,
     shuffle: false,
@@ -11,26 +12,98 @@ const PlaybackSettings = () => {
     volume: 80,
   });
 
-  // Handle Changes
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
     setPlayback((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]:
+        type === "checkbox"
+          ? checked
+          : name === "volume"
+            ? Number(value)
+            : value,
     }));
   };
-  return (
-    <div>
 
-      {/* Autoplay */}
-      <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl">
-        <div>{ }
-          <h3 className="text-lg font-semibold text-white">
+  const loadPlayback = async () => {
+    try {
+      const user = auth.currentUser;
+
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
+      const docSnap = await getDoc(
+        doc(db, "users", user.uid)
+      );
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+
+        if (data.playback) {
+          setPlayback((prev) => ({
+            ...prev,
+            ...data.playback,
+          }));
+        }
+      }
+    } catch (error) {
+      console.error("Playback loading error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      setSaving(true);
+
+      const user = auth.currentUser;
+
+      if (!user) return;
+
+      await updateDoc(doc(db, "users", user.uid), {
+        playback,
+      });
+
+      alert("Playback settings updated successfully.");
+    } catch (error) {
+      console.error("Playback update error:", error);
+      alert(error.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  useEffect(() => {
+    loadPlayback();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="py-10 text-center text-sm text-white">
+        Loading playback settings...
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {/* AUTOPLAY */}
+      <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl sm:p-5">
+        <div className="min-w-0">
+          <h3 className="text-sm font-semibold text-white sm:text-lg">
             Autoplay
           </h3>
 
-          <p className="text-sm text-gray-400">
+          <p className="mt-1 text-xs text-gray-400 sm:text-sm">
             Automatically play the next song.
           </p>
         </div>
@@ -40,18 +113,18 @@ const PlaybackSettings = () => {
           name="autoplay"
           checked={playback.autoplay}
           onChange={handleChange}
-          className="h-5 w-5 accent-green-500"
+          className="h-5 w-5 shrink-0 accent-green-500"
         />
       </div>
 
-      {/* Shuffle */}
-      <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl">
-        <div>
-          <h3 className="text-lg font-semibold text-white">
+      {/* SHUFFLE */}
+      <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl sm:p-5">
+        <div className="min-w-0">
+          <h3 className="text-sm font-semibold text-white sm:text-lg">
             Shuffle
           </h3>
 
-          <p className="text-sm text-gray-400">
+          <p className="mt-1 text-xs text-gray-400 sm:text-sm">
             Shuffle songs by default.
           </p>
         </div>
@@ -61,13 +134,13 @@ const PlaybackSettings = () => {
           name="shuffle"
           checked={playback.shuffle}
           onChange={handleChange}
-          className="h-5 w-5 accent-green-500"
+          className="h-5 w-5 shrink-0 accent-green-500"
         />
       </div>
 
-      {/* Repeat Mode */}
-      <div className="mt-4 rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl">
-        <label className="mb-3 block text-lg font-semibold text-white">
+      {/* REPEAT */}
+      <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl sm:p-5">
+        <label className="mb-3 block text-base font-semibold text-white sm:text-lg">
           Repeat Mode
         </label>
 
@@ -75,7 +148,7 @@ const PlaybackSettings = () => {
           name="repeat"
           value={playback.repeat}
           onChange={handleChange}
-          className="w-full rounded-xl border border-white/10 bg-zinc-900 px-4 py-3 text-white outline-none"
+          className="w-full rounded-xl border border-white/10 bg-zinc-900 px-4 py-3 text-sm text-white outline-none sm:text-base"
         >
           <option value="off">Off</option>
           <option value="one">Repeat Current Song</option>
@@ -83,9 +156,9 @@ const PlaybackSettings = () => {
         </select>
       </div>
 
-      {/* Audio Quality */}
-      <div className="mt-4 rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl">
-        <label className="mb-3 block text-lg font-semibold text-white">
+      {/* AUDIO QUALITY */}
+      <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl sm:p-5">
+        <label className="mb-3 block text-base font-semibold text-white sm:text-lg">
           Audio Quality
         </label>
 
@@ -93,7 +166,7 @@ const PlaybackSettings = () => {
           name="audioQuality"
           value={playback.audioQuality}
           onChange={handleChange}
-          className="w-full rounded-xl border border-white/10 bg-zinc-900 px-4 py-3 text-white outline-none"
+          className="w-full rounded-xl border border-white/10 bg-zinc-900 px-4 py-3 text-sm text-white outline-none sm:text-base"
         >
           <option value="low">Low</option>
           <option value="normal">Normal</option>
@@ -101,15 +174,14 @@ const PlaybackSettings = () => {
         </select>
       </div>
 
-      {/* Volume */}
-      <div className="mt-4 rounded-2xl bg-white/10 border border-white/10 p-4 backdrop-blur-xl">
-
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-white text-lg font-semibold">
+      {/* VOLUME */}
+      <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl sm:p-5">
+        <div className="mb-3 flex items-center justify-between gap-4">
+          <h3 className="text-base font-semibold text-white sm:text-lg">
             Default Volume
           </h3>
 
-          <span className="text-green-400 font-semibold">
+          <span className="shrink-0 font-semibold text-green-400">
             {playback.volume}%
           </span>
         </div>
@@ -123,17 +195,16 @@ const PlaybackSettings = () => {
           onChange={handleChange}
           className="w-full accent-green-500"
         />
-
       </div>
 
-      {/* Explicit Content */}
-      <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl">
-        <div>
-          <h3 className="text-lg font-semibold text-white">
+      {/* EXPLICIT CONTENT */}
+      <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl sm:p-5">
+        <div className="min-w-0">
+          <h3 className="text-sm font-semibold text-white sm:text-lg">
             Explicit Content
           </h3>
 
-          <p className="text-sm text-gray-400">
+          <p className="mt-1 text-xs text-gray-400 sm:text-sm">
             Allow songs marked as explicit.
           </p>
         </div>
@@ -143,18 +214,20 @@ const PlaybackSettings = () => {
           name="explicitContent"
           checked={playback.explicitContent}
           onChange={handleChange}
-          className="h-5 w-5 accent-green-500"
+          className="h-5 w-5 shrink-0 accent-green-500"
         />
       </div>
-      {/* Save Button */}
+
+      {/* SAVE */}
       <button
         type="submit"
-        className="mt-6 w-full rounded-2xl bg-green-500 py-3 text-lg font-semibold text-white transition hover:bg-green-600"
+        disabled={saving}
+        className="w-full rounded-2xl bg-green-500 py-3 text-sm font-semibold text-white transition hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-60 sm:text-base"
       >
-        Save Changes
+        {saving ? "Saving..." : "Save Changes"}
       </button>
-    </div>
-  )
-}
+    </form>
+  );
+};
 
-export default PlaybackSettings
+export default PlaybackSettings;

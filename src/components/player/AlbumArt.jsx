@@ -81,8 +81,8 @@ const AlbumArt = ({ song, isPlaying: propIsPlaying }) => {
       </div>
 
       {/* Song information */}
-      <div className="mt-5 text-center sm:mt-6">
-        <h2 className="truncate text-xl font-bold text-white sm:text-2xl">
+      <div className="mt-5 flex flex-col item-center justify-center text-center sm:mt-6">
+        <h2 className="truncate text-xl font-bold text-white sm:text-2xl w-70 text-center">
           {activeSong.title}
         </h2>
 

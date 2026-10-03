@@ -13,36 +13,55 @@ const SettingItems = ({
   const isOpen = activeSection === section;
 
   return (
-    <li className="w-full rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 p-4 mb-4">
+    <li className="w-full overflow-hidden rounded-2xl border border-white/10 bg-white/10 p-3 backdrop-blur-md sm:p-4">
       <button
+        type="button"
         onClick={() => toggleSection(section)}
-        className="w-full flex items-center justify-between cursor-pointer"
+        aria-expanded={isOpen}
+        className="flex w-full items-center justify-between gap-4 text-left"
       >
-        <div className="flex items-center gap-4">
-          <span className="text-xl">{icon}</span>
+        <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+          <span className="shrink-0 text-lg sm:text-xl">
+            {icon}
+          </span>
 
-          <span className={`text-xl md:text-2xl font-bold ${titleClass}`}>
+          <span
+            className={`truncate text-base font-bold sm:text-xl md:text-2xl ${titleClass}`}
+          >
             {title}
           </span>
         </div>
 
         <FaCaretDown
-          className={`transition-transform duration-300 ${
+          className={`shrink-0 transition-transform duration-300 ${
             isOpen ? "rotate-180" : ""
           }`}
         />
       </button>
 
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="overflow-hidden mt-4"
+            initial={{
+              opacity: 0,
+              height: 0,
+            }}
+            animate={{
+              opacity: 1,
+              height: "auto",
+            }}
+            exit={{
+              opacity: 0,
+              height: 0,
+            }}
+            transition={{
+              duration: 0.3,
+            }}
+            className="mt-4 overflow-hidden"
           >
-            {children}
+            <div className="border-t border-white/10 pt-4">
+              {children}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
