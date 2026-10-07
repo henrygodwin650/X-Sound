@@ -20,14 +20,14 @@ const TrendingPage = () => {
     error,
   } = useHomeMusic();
 
-  const trendingSongs = popular.slice(0, 12);
+  const trendingSongs = (popular ?? []).slice(0, 12);
 
   const handlePlay = (song) => {
     playSong(song, trendingSongs);
   };
 
   return (
-    <div className="hero-bg-color p-5">
+    <div className="hero-bg-color p-5 min-h-screen">
       {/* Heading */}
       <div className="mb-8 mt-4 flex items-center justify-center">
         <span className="mb-4 mt-16 inline-flex w-fit items-center gap-4 px-5 py-4 text-center text-5xl font-semibold text-white">

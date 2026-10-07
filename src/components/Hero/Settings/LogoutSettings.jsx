@@ -4,10 +4,12 @@ import { FaCaretDown } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import { auth } from "../../../backend/firebase";
 import { useNavigate } from "react-router-dom";
+import useMusic from "../../../Hooks/useMusic";
 
 const LogoutSettings = () => {
   const [showLogout, setShowLogout] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+  const { stopMusic } = useMusic();
 
   const navigate = useNavigate();
 
@@ -15,6 +17,7 @@ const LogoutSettings = () => {
     try {
       setLoggingOut(true);
 
+      stopMusic(); // Stop the music before logging out
       await signOut(auth);
 
       navigate("/login");

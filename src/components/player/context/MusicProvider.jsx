@@ -458,6 +458,25 @@ const MusicProvider = ({ children }) => {
   }, []);
 
   // =========================
+  // STOP MUSIC
+  // =========================
+
+  const stopMusic = () => {
+  const audio = audioRef.current;
+
+  audio.pause();
+  audio.currentTime = 0;
+  audio.src = "";
+
+  setIsPlaying(false);
+  setCurrentTime(0);
+  setDuration(0);
+  setCurrentSong(null);
+  setCurrentIndex(-1);
+  setQueue([]);
+};
+  
+  // =========================
   // FAVORITES
   // =========================
 
@@ -662,6 +681,7 @@ const MusicProvider = ({ children }) => {
     pauseSong,
     togglePlay,
     seek,
+    stopMusic,
 
     handleNext,
     handlePrevious,

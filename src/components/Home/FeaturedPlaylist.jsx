@@ -33,7 +33,7 @@ const FeaturedPlaylist = () => {
           Featured Playlist
         </h2>
 
-        <button className="text-green-400 hover:text-green-300">
+        <button className="text-green-400 hover:text-green-300 cursor-pointer">
           View All
         </button>
 

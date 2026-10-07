@@ -63,7 +63,7 @@ const ContinueListening = () => {
 
         <button
           type="button"
-          className="shrink-0 text-sm font-semibold text-green-400 transition hover:text-green-300 sm:text-base"
+          className="shrink-0 text-sm font-semibold text-green-400 transition hover:text-green-300 cursor-pointer sm:text-base"
         >
           View All
         </button>
